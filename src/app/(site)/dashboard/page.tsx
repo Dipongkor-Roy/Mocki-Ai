@@ -44,104 +44,149 @@ export default async function DashboardPage() {
   ).length;
 
   return (
-    <div className="min-h-screen bg-gray-50 px-4 py-8 sm:px-6 lg:px-8">
-      <div className="mx-auto max-w-6xl space-y-8">
-        {/* Welcome Card */}
-        <div className="flex flex-col items-start justify-between gap-4 rounded-2xl bg-white p-6 shadow-sm ring-1 ring-gray-100 sm:flex-row sm:items-center">
-          <div className="flex items-center gap-4">
-            {user.imageUrl ? (
-              <Image
-                src={user.imageUrl}
-                alt={displayName ?? "User"}
-                width={56}
-                height={56}
-                className="rounded-full ring-2 ring-indigo-100"
-              />
-            ) : (
-              <div className="flex h-14 w-14 items-center justify-center rounded-full bg-indigo-100 text-lg font-semibold text-indigo-600">
-                {displayName?.charAt(0).toUpperCase()}
+    <div className="relative flex-1 overflow-hidden px-4 py-8 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-7xl">
+        {/* Header Section */}
+        <div className="mb-12  flex flex-col items-start justify-between gap-6 sm:flex-row sm:items-end">
+          <div className="flex-1">
+            <div className="flex items-center gap-4 mb-3">
+              {user.imageUrl ? (
+                <Image
+                  src={user.imageUrl}
+                  alt={displayName ?? "User"}
+                  width={48}
+                  height={48}
+                  className="rounded-full ring-2 ring-indigo-100"
+                />
+              ) : (
+                <div className="flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-br from-indigo-400 to-indigo-600 text-lg font-semibold text-white">
+                  {displayName?.charAt(0).toUpperCase()}
+                </div>
+              )}
+              <div>
+                <h1 className="text-2xl font-bold text-gray-900">
+                  Welcome back, {displayName}
+                </h1>
+                <p className="text-sm text-gray-500 mt-0.5">{email}</p>
               </div>
-            )}
-            <div>
-              <h1 className="text-xl font-semibold text-gray-900">
-                Welcome back, {displayName} 👋
-              </h1>
-              <p className="text-sm text-gray-500">{email}</p>
             </div>
           </div>
           <StartInterviewButton hasCv={hasCv} />
         </div>
 
-        {/* CV Section */}
-        <CVSection initialCvData={cvData} />
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-12">
+          {/* Main Content - CV + Quick Stats */}
+          <div className="lg:col-span-2 space-y-6">
+            {/* CV Section */}
+            <CVSection initialCvData={cvData} />
 
-        {/* Quick Stats */}
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-          <StatCard label="Total Interviews" value={String(totalInterviews)} />
-          <StatCard label="Completed" value={String(completedCount)} />
-          <StatCard label="Avg. Score" value="—" />
-        </div>
+            {/* Quick Stats */}
+            <div className="grid grid-cols-3 gap-3">
+              <StatCard
+                label="Total Interviews"
+                value={String(totalInterviews)}
+                icon="📊"
+              />
+              <StatCard
+                label="Completed"
+                value={String(completedCount)}
+                icon="✓"
+              />
+              <StatCard label="Avg. Score" value="—" icon="⭐" />
+            </div>
+          </div>
 
-        {/* Interview History */}
-        <section className="rounded-2xl bg-white p-6 shadow-sm ring-1 ring-gray-100">
-          <h2 className="mb-4 text-lg font-semibold text-gray-900">
-            Interview History
-          </h2>
-          {dbUser.interviews.length === 0 ? (
-            <EmptyState
-              title="No interviews yet"
-              description="Start your first mock interview to see your history here."
-            />
-          ) : (
-            <ul className="space-y-2">
-              {interviews.map((interview: (typeof interviews)[number]) => (
-                <li
-                  key={interview.id}
-                  className="flex items-center justify-between rounded-lg border border-gray-100 px-4 py-3"
-                >
-                  <div>
-                    <p className="text-sm font-medium text-gray-800">
-                      {interview.industry} · {interview.level}
-                    </p>
-                    <p className="text-xs text-gray-400">
-                      {new Date(interview.createdAt).toLocaleDateString()}
+          {/* Sidebar - Interview History */}
+          <div className="lg:col-span-1">
+            <section className="h-full rounded-2xl bg-white p-6 shadow-sm ring-1 ring-gray-100 flex flex-col">
+              <h2 className="mb-4 text-base font-semibold text-gray-900">
+                Recent Activity
+              </h2>
+              {dbUser.interviews.length === 0 ? (
+                <div className="flex-1 flex items-center justify-center">
+                  <div className="text-center">
+                    <p className="text-sm text-gray-600">No interviews yet</p>
+                    <p className="text-xs text-gray-400 mt-1">
+                      Start one to see history
                     </p>
                   </div>
-                  <span
-                    className={`rounded-full px-2 py-1 text-xs font-medium ${
-                      interview.completed
-                        ? "bg-green-50 text-green-600"
-                        : "bg-yellow-50 text-yellow-600"
-                    }`}
-                  >
-                    {interview.completed ? "Completed" : "In Progress"}
-                  </span>
-                </li>
-              ))}
-            </ul>
-          )}
-        </section>
+                </div>
+              ) : (
+                <ul className="space-y-3 flex-1 overflow-y-auto">
+                  {interviews
+                    .slice(0, 5)
+                    .map((interview: (typeof interviews)[number]) => (
+                      <li
+                        key={interview.id}
+                        className="text-sm border-l-2 border-indigo-200 pl-3 py-1"
+                      >
+                        <p className="font-medium text-gray-700">
+                          {interview.industry} · {interview.level}
+                        </p>
+                        <p className="text-xs text-gray-400 mt-0.5">
+                          {new Date(interview.createdAt).toLocaleDateString(
+                            "en-US",
+                            {
+                              month: "short",
+                              day: "numeric",
+                            },
+                          )}
+                        </p>
+                        <span
+                          className={`inline-block mt-1 text-xs font-medium px-2 py-0.5 rounded-full ${
+                            interview.completed
+                              ? "bg-green-50 text-green-700"
+                              : "bg-amber-50 text-amber-700"
+                          }`}
+                        >
+                          {interview.completed ? "Done" : "In Progress"}
+                        </span>
+                      </li>
+                    ))}
+                </ul>
+              )}
+            </section>
+          </div>
+        </div>
 
-        {/* Previous Reports */}
-        <section className="rounded-2xl bg-white p-6 shadow-sm ring-1 ring-gray-100">
-          <h2 className="mb-4 text-lg font-semibold text-gray-900">
-            Previous Reports
-          </h2>
-          <EmptyState
-            title="No reports yet"
-            description="Complete an interview to generate your AI performance report."
-          />
-        </section>
+        {/* Full Width - Previous Reports */}
+        {totalInterviews > 0 && (
+          <section className="rounded-2xl bg-white p-8 shadow-sm ring-1 ring-gray-100">
+            <div className="mb-6">
+              <h2 className="text-lg font-semibold text-gray-900">
+                Performance Reports
+              </h2>
+              <p className="text-sm text-gray-500 mt-1">
+                AI-powered feedback on your interviews
+              </p>
+            </div>
+            <EmptyState
+              title="No reports generated yet"
+              description="Complete an interview to generate your detailed performance analysis and recommendations."
+            />
+          </section>
+        )}
       </div>
     </div>
   );
 }
 
-function StatCard({ label, value }: { label: string; value: string }) {
+function StatCard({
+  label,
+  value,
+  icon,
+}: {
+  label: string;
+  value: string;
+  icon?: string;
+}) {
   return (
-    <div className="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-gray-100">
-      <p className="text-sm text-gray-500">{label}</p>
-      <p className="mt-1 text-2xl font-semibold text-gray-900">{value}</p>
+    <div className="rounded-xl bg-white p-4 shadow-sm ring-1 ring-gray-100 hover:ring-indigo-200 transition-all">
+      {icon && <span className="text-xl mb-2 block">{icon}</span>}
+      <p className="text-xs uppercase tracking-wide text-gray-500 font-medium">
+        {label}
+      </p>
+      <p className="mt-2 text-3xl font-bold text-gray-900">{value}</p>
     </div>
   );
 }
@@ -154,9 +199,12 @@ function EmptyState({
   description: string;
 }) {
   return (
-    <div className="flex flex-col items-center justify-center rounded-xl border border-dashed border-gray-200 py-10 text-center">
-      <p className="text-sm font-medium text-gray-700">{title}</p>
-      <p className="mt-1 text-sm text-gray-400">{description}</p>
+    <div className="flex flex-col items-center justify-center rounded-xl border border-dashed border-gray-200 border-opacity-50 py-12 px-4 text-center bg-gradient-to-br from-gray-50 to-white">
+      <div className="text-3xl mb-3 opacity-40">✨</div>
+      <p className="text-sm font-semibold text-gray-700">{title}</p>
+      <p className="mt-2 text-sm text-gray-500 max-w-sm leading-relaxed">
+        {description}
+      </p>
     </div>
   );
 }

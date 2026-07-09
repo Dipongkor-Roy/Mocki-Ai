@@ -8,7 +8,7 @@ import TopCarousel from "../ui/TopCarousel";
 
 export default function HeroOne() {
   return (
-    <div className="banner-wrap lg:pb-24 pb-12 font-dm bg-home-two-price relative pt-24">
+    <div className="banner-wrap lg:pb-24 pb-12 font-dm bg-home-two-price bg-no-repeat bg-cover bg-center relative pt-24">
       <div className="max-w-screen-xl mx-auto px-3 sm:px-6 md:px-14 lg:px-14 xl:px-18 2xl:px-3 pb-0">
         <div className="grid lg:grid-cols-2 grid-cols-1 gap-10 lg:pt-10 relative z-10">
           {/* left side */}

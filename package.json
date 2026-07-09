@@ -26,7 +26,8 @@
     "react-dom": "^19.2.7",
     "react-feather": "^2.0.10",
     "react-hot-toast": "^2.6.0",
-    "sass": "^1.91.0"
+    "sass": "^1.91.0",
+    "unpdf": "^1.6.2"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",

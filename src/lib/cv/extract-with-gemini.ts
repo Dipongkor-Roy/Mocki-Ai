@@ -9,6 +9,9 @@ export type CVData = {
   currentRole?: string | null;
   education: string;
   summary: string;
+  industry?: string | null;
+  jobTitles?: string[] | null;
+  linkedinUrl?: string | null;
 };
 
 export async function extractCVData(rawText: string): Promise<CVData> {
@@ -21,16 +24,19 @@ CV Text:
 ${rawText}
 """
 
-Return exactly this JSON shape:
+Return exactly this JSON shape (use null for missing fields, empty array for skills if none found):
 {
   "name": "full name as string",
-  "email": "email or null",
-  "phone": "phone or null",
-  "skills": ["array", "of", "technical and soft skills"],
+  "email": "email address or null",
+  "phone": "phone number or null",
+  "linkedinUrl": "LinkedIn profile URL or null",
+  "skills": ["array", "of", "top technical and soft skills (max 15)"],
   "experienceYears": 0,
   "currentRole": "most recent job title or null",
-  "education": "highest qualification as a short string",
-  "summary": "2-3 sentence professional summary based on the CV"
+  "jobTitles": ["array", "of", "all job titles held or null"],
+  "industry": "primary industry/domain (e.g. Software Engineering, Finance, Healthcare) or null",
+  "education": "highest qualification as a short string (e.g. B.Tech Computer Science)",
+  "summary": "2-3 sentence professional summary highlighting key expertise and career focus"
 }
 `;
 
@@ -44,8 +50,21 @@ Return exactly this JSON shape:
     .trim();
 
   try {
-    return JSON.parse(cleaned) as CVData;
-  } catch {
+    const parsed = JSON.parse(cleaned) as CVData;
+
+    // Ensure skills is always an array
+    if (!Array.isArray(parsed.skills)) {
+      parsed.skills = [];
+    }
+
+    // Ensure experienceYears is a number
+    if (typeof parsed.experienceYears !== "number") {
+      parsed.experienceYears = 0;
+    }
+
+    return parsed;
+  } catch (error) {
+    console.error("Failed to parse CV data:", error);
     throw new Error("AI returned invalid JSON. Try re-uploading the CV.");
   }
 }

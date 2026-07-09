@@ -18,9 +18,13 @@ export default function RootLayout({
   return (
     <div className="font-dm-sans">
       <Header />
-      <ClerkProvider>{children}</ClerkProvider>
+      <ClerkProvider>
+        <main className="flex-1">{children}</main>
+      </ClerkProvider>
 
-      <Footer />
+      <div className="pt-10">
+        <Footer />
+      </div>
     </div>
   );
 }

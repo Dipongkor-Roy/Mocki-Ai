@@ -1,7 +1,3 @@
-// eslint-disable-next-line @typescript-eslint/no-require-imports
-const pdfParse = require("pdf-parse") as (
-  buffer: Buffer,
-) => Promise<{ text: string }>;
 import mammoth from "mammoth";
 
 export async function parseCVFile(
@@ -9,8 +5,13 @@ export async function parseCVFile(
   mimeType: string,
 ): Promise<string> {
   if (mimeType === "application/pdf") {
-    const data = await pdfParse(buffer);
-    return data.text;
+    const mod = eval("require")("pdf-parse");
+    const parser = new mod.PDFParse(new Uint8Array(buffer));
+    await parser.load();
+    const text = await parser.getText();
+    console.log("TEXT TYPE:", typeof text);
+    console.log("TEXT VALUE:", text);
+    return typeof text === "string" ? text : JSON.stringify(text);
   }
 
   if (

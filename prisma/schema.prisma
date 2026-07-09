@@ -1,0 +1,76 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String       @id @default(auto()) @map("_id") @db.ObjectId
+
+  clerkId      String       @unique
+  email        String       @unique
+
+  name         String?
+  image        String?
+  
+  cvMarkdown  String?
+  cvData      Json?   // extracted: name, skills, experience, education
+  cvUploadedAt DateTime?
+
+  interviews   Interview[]
+
+
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+}
+
+model Interview {
+  id             String      @id @default(auto()) @map("_id") @db.ObjectId
+
+  userId         String      @db.ObjectId
+  user           User        @relation(fields: [userId], references: [id])
+
+  industry       String
+  level          String
+
+  questions      Json
+  answers        Json
+
+  duration       Int?        // seconds
+  transcript     String?
+  completed      Boolean     @default(false)
+
+  report         Report?
+
+  createdAt      DateTime    @default(now())
+  updatedAt      DateTime    @updatedAt
+}
+
+model Report {
+  id                String      @id @default(auto()) @map("_id") @db.ObjectId
+
+  interviewId       String      @unique @db.ObjectId
+  interview         Interview   @relation(fields: [interviewId], references: [id])
+
+  overallScore      Int
+
+  technicalScore    Int
+  communicationScore Int
+  confidenceScore   Int
+
+  strengths         String[]
+  improvements      String[]
+
+  summary           String
+  recommendation    String
+
+  // Camera & Voice Feedback
+  cameraFeedback    Json?
+  voiceFeedback     Json?
+
+  createdAt         DateTime    @default(now())
+}

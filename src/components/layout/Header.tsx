@@ -9,6 +9,7 @@ import DarkToggle from "./DarkToggle";
 import SearchBox from "../ui/Search";
 import Image from "next/image";
 import Button from "../ui/Button";
+import { LayoutDashboard, Search, Smile } from "lucide-react";
 
 interface HeaderProps {
   btnColor?: string;
@@ -18,6 +19,7 @@ interface HeaderProps {
   headerClass?: string;
   position?: string;
   theme?: "header-dark" | "header-light";
+  brandName?: string;
 }
 
 const Header = ({
@@ -28,6 +30,7 @@ const Header = ({
   btnlinkColor = "text-white",
   theme = "header-dark",
   logo = "/images/logo/logo.png",
+  brandName = "Mocki Ai",
 }: HeaderProps) => {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
@@ -65,12 +68,15 @@ const Header = ({
         >
           <nav className="flex items-center justify-between w-full relative">
             {/* Logo */}
-            <Link href="/" className="flex items-center lg:py-2 py-3 mr-5">
+            <Link
+              href="/"
+              className="flex items-center jutstify-between lg:py-2 py-3 mr-5"
+            >
               {/* Light Logo */}
               <Image
                 src={logo}
                 alt="logo"
-                width={125}
+                width={45}
                 height={40}
                 priority
                 className="light-logo"
@@ -79,11 +85,14 @@ const Header = ({
               <Image
                 src={getDarkLogo(logo)}
                 alt="logo dark"
-                width={125}
+                width={45}
                 height={40}
                 priority
                 className="dark-logo"
               />
+              <h2 className="ml-2 text-xl font-semibold text-black dark:text-white">
+                {brandName}
+              </h2>
             </Link>
 
             {/* Mobile Menu Overlay */}
@@ -104,26 +113,45 @@ const Header = ({
             />
 
             {/* Right Icons */}
-            <div className="flex items-center space-x-3">
-              {/* Search Button */}
-              <SearchBox />
+            <div className="flex items-center justify-between w-auto space-x-3">
+              <div className="flex items-center space-x-3">
+                {/* Search Button */}
 
-              {/* Dark Mode Toggle */}
-              <DarkToggle />
+                {/* Dark Mode Toggle */}
 
-              {/* Auth Button */}
-              {!isLoaded ? null : isSignedIn ? (
-                <UserButton />
-              ) : (
-                <Button
-                  href="/registers"
-                  label="Sign In"
-                  icon=""
-                  className="text-sm register-btn"
-                  bgColor={` ${btnColor} `}
-                  textColor={` ${btnlinkColor} `}
-                />
-              )}
+                {/* Auth Button */}
+                <div className="h-10 flex items-center">
+                  {!isLoaded ? null : isSignedIn ? (
+                    <UserButton
+                      appearance={{
+                        elements: {
+                          userButtonAvatarBox: {
+                            width: 41,
+                            height: 40,
+                          },
+                        },
+                      }}
+                    >
+                      <UserButton.MenuItems>
+                        <UserButton.Link
+                          label="Dashboard"
+                          labelIcon={<LayoutDashboard size={16} />}
+                          href="/dashboard"
+                        />
+                      </UserButton.MenuItems>
+                    </UserButton>
+                  ) : (
+                    <Button
+                      href="/registers"
+                      label="Sign In"
+                      icon=""
+                      className="text-sm register-btn"
+                      bgColor={` ${btnColor} `}
+                      textColor={` ${btnlinkColor} `}
+                    />
+                  )}
+                </div>
+              </div>
 
               {/* Mobile Menu Button */}
               <button

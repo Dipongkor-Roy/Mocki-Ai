@@ -1,6 +1,6 @@
 // app/layout.tsx
 export const metadata = {
-  title: "Exsit Next",
+  title: "Mocki Ai",
   description: "Modern Next.js app with Tailwind + TypeScript + SCSS",
 };
 

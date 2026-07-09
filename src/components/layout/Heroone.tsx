@@ -8,7 +8,7 @@ import TopCarousel from "../ui/TopCarousel";
 
 export default function HeroOne() {
   return (
-    <div className="banner-wrap lg:pb-24 pb-12 font-dm bg-home-one-gradient-banner relative pt-24">
+    <div className="banner-wrap lg:pb-24 pb-12 font-dm bg-home-two-price relative pt-24">
       <div className="max-w-screen-xl mx-auto px-3 sm:px-6 md:px-14 lg:px-14 xl:px-18 2xl:px-3 pb-0">
         <div className="grid lg:grid-cols-2 grid-cols-1 gap-10 lg:pt-10 relative z-10">
           {/* left side */}
@@ -87,29 +87,26 @@ export default function HeroOne() {
           {/* right side */}
           <div className="w-full">
             <div
-              className="relative rounded-xl lg:overflow-visible overflow-hidden aos-init aos-animate"
+              className="relative rounded-xl lg:overflow-visible overflow-hidden aos-init aos-animate bg-transparent"
               data-aos="fade-up"
               data-aos-duration="600"
             >
+              {" "}
               {/* Main Image */}
-              <Image
-                src="/images/right-banner-bg.jpg"
-                alt="banner"
-                decoding="async"
-                loading="eager"
-                width={637}
-                height={721}
-                className="w-full rounded-xl"
-                priority
-              />
-
+              <div className="w-full aspect-[637/721] rounded-xl overflow-hidden ">
+                <iframe
+                  src="https://my.spline.design/interactiveaiwebsite-wtWdv2EaO3yGXzCOYmueDAms/"
+                  width="100%"
+                  height="100%"
+                  style={{ backgroundColor: "transparent" }}
+                ></iframe>
+              </div>
               {/* Floating Icon */}
               <div className="absolute top-16 left-0 -translate-x-1/2 hidden lg:flex">
                 <div className="w-16 h-16 rounded-xl bg-lime-300 flex items-center justify-center text-center">
                   <Boxes size={34} strokeWidth="1.5" />
                 </div>
               </div>
-
               {/* Avatar Group */}
               <div
                 className="absolute top-4 -right-8 bg-white rounded-xl border border-gray-200 shadow-sm p-3 gap-4 mt-4 hidden lg:flex flex-row items-center aos-init aos-animate"
@@ -151,7 +148,6 @@ export default function HeroOne() {
                   </span>{" "}
                 </div>
               </div>
-
               {/* topslider */}
               <TopCarousel
                 items={[

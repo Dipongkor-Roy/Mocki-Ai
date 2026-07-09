@@ -6,7 +6,7 @@ import Footer from "@/components/layout/Footer";
 import { ClerkProvider } from "@clerk/nextjs";
 
 export const metadata = {
-  title: "Exsit Next",
+  title: "Mocki Ai",
   description: "Modern Next.js app with Tailwind + TypeScript + SCSS",
 };
 

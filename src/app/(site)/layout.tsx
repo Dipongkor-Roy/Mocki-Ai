@@ -22,11 +22,7 @@ export default function RootLayout({
         <main className="flex-1">{children}</main>
       </ClerkProvider>
 
-      {!hideFooter && (
-        <div className="pt-10">
-          <Footer />
-        </div>
-      )}
+      {!hideFooter && <Footer />}
     </div>
   );
 }

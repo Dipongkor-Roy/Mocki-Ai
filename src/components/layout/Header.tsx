@@ -129,6 +129,9 @@ const Header = ({
                             width: 41,
                             height: 40,
                           },
+                          userButtonPopoverFooter: {
+                            display: "none",
+                          },
                         },
                       }}
                     >

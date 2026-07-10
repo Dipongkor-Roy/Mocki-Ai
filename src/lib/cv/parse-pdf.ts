@@ -9,8 +9,8 @@ export async function parseCVFile(
     const parser = new mod.PDFParse(new Uint8Array(buffer));
     await parser.load();
     const text = await parser.getText();
-    console.log("TEXT TYPE:", typeof text);
-    console.log("TEXT VALUE:", text);
+    // console.log("TEXT TYPE:", typeof text);
+    // console.log("TEXT VALUE:", text);
     return typeof text === "string" ? text : JSON.stringify(text);
   }
 

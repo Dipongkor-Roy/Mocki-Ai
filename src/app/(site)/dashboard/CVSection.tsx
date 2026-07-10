@@ -6,14 +6,18 @@ import CVDataPreview from "./CVDataPreview";
 import type { CVData } from "@/lib/cv/extract-with-gemini";
 
 export default function CVSection({
-  initialCvData,
+  cvData,
+  onCvDataChange,
 }: {
-  initialCvData: CVData | null;
+  cvData: CVData | null;
+  onCvDataChange: (cvData: CVData | null) => void;
 }) {
-  const [cvData, setCvData] = useState<CVData | null>(initialCvData);
+  const setCvData = onCvDataChange;
   const [uploading, setUploading] = useState(false);
   const [showPreview, setShowPreview] = useState(false);
   const [saving, setSaving] = useState(false);
+  const [removing, setRemoving] = useState(false);
+  const [showRemoveModal, setShowRemoveModal] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
 
   async function handleUpload(file: File) {
@@ -59,6 +63,25 @@ export default function CVSection({
     }
   }
 
+  async function handleRemoveCVData() {
+    setRemoving(true);
+    try {
+      const res = await fetch("/api/cv/save-data", { method: "DELETE" });
+      if (!res.ok) {
+        const error = await res.json();
+        throw new Error(error.error || "Failed to remove");
+      }
+      setCvData(null);
+      setShowPreview(false);
+      setShowRemoveModal(false);
+      toast.success("CV data removed");
+    } catch (err: unknown) {
+      toast.error(err instanceof Error ? err.message : "Failed to remove");
+    } finally {
+      setRemoving(false);
+    }
+  }
+
   const triggerInput = () => fileRef.current?.click();
 
   const hiddenInput = (
@@ -75,13 +98,26 @@ export default function CVSection({
     />
   );
 
+  const removeModal = (
+    <RemoveCVModal
+      open={showRemoveModal}
+      isRemoving={removing}
+      onCancel={() => setShowRemoveModal(false)}
+      onConfirm={handleRemoveCVData}
+    />
+  );
+
   if (cvData && showPreview) {
     return (
-      <CVDataPreview
-        cvData={cvData}
-        onSave={handleSaveCVData}
-        isLoading={saving}
-      />
+      <>
+        <CVDataPreview
+          cvData={cvData}
+          onSave={handleSaveCVData}
+          onRemove={() => setShowRemoveModal(true)}
+          isLoading={saving}
+        />
+        {removeModal}
+      </>
     );
   }
 
@@ -209,6 +245,52 @@ function InfoRow({ label, value }: { label: string; value: string }) {
     <div className="p-3 rounded-lg bg-gray-50 border border-gray-100">
       <p className="text-xs uppercase tracking-wide font-semibold text-gray-500">{label}</p>
       <p className="text-sm font-semibold text-gray-900 mt-1.5">{value}</p>
+    </div>
+  );
+}
+
+function RemoveCVModal({
+  open,
+  isRemoving,
+  onCancel,
+  onConfirm,
+}: {
+  open: boolean;
+  isRemoving: boolean;
+  onCancel: () => void;
+  onConfirm: () => void;
+}) {
+  if (!open) return null;
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm px-4">
+      <div className="w-full max-w-sm rounded-2xl bg-white p-6 shadow-2xl border border-gray-100">
+        <div className="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-full bg-red-50">
+          <span className="text-2xl">🗑️</span>
+        </div>
+        <h3 className="text-lg font-bold text-gray-900">Remove your CV?</h3>
+        <p className="mt-2 text-sm text-gray-600 leading-relaxed">
+          This will permanently delete your extracted CV data. You&apos;ll
+          need to upload your CV again to start a personalized interview.
+        </p>
+
+        <div className="mt-6 flex gap-3">
+          <button
+            onClick={onCancel}
+            disabled={isRemoving}
+            className="flex-1 rounded-xl border border-gray-300 px-4 py-2.5 text-sm font-semibold text-gray-700 hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            Cancel
+          </button>
+          <button
+            onClick={onConfirm}
+            disabled={isRemoving}
+            className="flex-1 rounded-xl bg-red-600 px-4 py-2.5 text-sm font-semibold text-white hover:bg-red-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            {isRemoving ? "Removing..." : "Yes, Remove"}
+          </button>
+        </div>
+      </div>
     </div>
   );
 }

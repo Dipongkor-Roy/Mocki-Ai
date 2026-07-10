@@ -35,3 +35,23 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: message }, { status: 500 });
   }
 }
+
+export async function DELETE() {
+  try {
+    const user = await currentUser();
+    if (!user)
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
+    await prisma.user.update({
+      where: { clerkId: user.id },
+      data: { cvData: null, cvMarkdown: null, cvUploadedAt: null },
+    });
+
+    return NextResponse.json({ success: true });
+  } catch (error: unknown) {
+    const message =
+      error instanceof Error ? error.message : "Something went wrong";
+    console.error("[CV_DELETE_DATA]", error);
+    return NextResponse.json({ error: message }, { status: 500 });
+  }
+}

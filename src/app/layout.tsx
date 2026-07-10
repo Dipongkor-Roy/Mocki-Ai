@@ -2,6 +2,7 @@
 import "./globals.css";
 import { Sora, DM_Sans } from "next/font/google";
 import AOSWrapper from "@/components/layout/AOSWrapper";
+import { Toaster } from "react-hot-toast";
 
 // Define a secondary font for headings
 const sora = Sora({
@@ -31,6 +32,7 @@ export default function RootLayout({
       <html lang="en" className={`${sora.variable} ${dmSans.variable}`}>
         <body>
           <AOSWrapper />
+          <Toaster position="top-right" />
           {children} {/* no global Header/Footer */}
         </body>
       </html>

@@ -6,12 +6,14 @@ import type { CVData } from "@/lib/cv/extract-with-gemini";
 interface CVDataPreviewProps {
   cvData: CVData;
   onSave: (updatedData: CVData) => void;
+  onRemove?: () => void;
   isLoading?: boolean;
 }
 
 export default function CVDataPreview({
   cvData,
   onSave,
+  onRemove,
   isLoading = false,
 }: CVDataPreviewProps) {
   const [isEditing, setIsEditing] = useState(false);
@@ -62,12 +64,22 @@ export default function CVDataPreview({
               Review and edit your extracted information
             </p>
           </div>
-          <button
-            onClick={() => setIsEditing(true)}
-            className="px-4 py-2 bg-indigo-600 text-white text-sm font-medium rounded-lg hover:bg-indigo-700 transition-colors"
-          >
-            ✏️ Edit
-          </button>
+          <div className="flex gap-2">
+            {onRemove && (
+              <button
+                onClick={onRemove}
+                className="px-4 py-2 bg-white border border-red-200 text-red-600 text-sm font-medium rounded-lg hover:bg-red-50 transition-colors"
+              >
+                🗑️ Remove
+              </button>
+            )}
+            <button
+              onClick={() => setIsEditing(true)}
+              className="px-4 py-2 bg-indigo-600 text-white text-sm font-medium rounded-lg hover:bg-indigo-700 transition-colors"
+            >
+              ✏️ Edit
+            </button>
+          </div>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -201,170 +213,150 @@ export default function CVDataPreview({
   }
 
   // Edit Mode
+  const inputClass =
+    "w-full px-3.5 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent";
+  const labelClass = "block text-xs font-semibold text-gray-600 mb-1.5";
+
   return (
-    <div className="rounded-2xl bg-white p-6 border border-red-100 space-y-6">
-      <div>
-        <h3 className="text-lg font-semibold text-gray-900 mb-1">
-          Edit CV Data
-        </h3>
-        <p className="text-sm text-gray-600">
-          Make corrections to ensure accuracy for personalized interviews
-        </p>
+    <div className="rounded-2xl bg-white border border-gray-200 flex flex-col max-h-[calc(100vh-8rem)]">
+      <div className="flex items-center justify-between gap-4 px-6 py-5 border-b border-gray-100">
+        <div>
+          <h3 className="text-lg font-semibold text-gray-900">Edit CV Data</h3>
+          <p className="text-sm text-gray-500 mt-0.5">
+            Make corrections to ensure accuracy for personalized interviews
+          </p>
+        </div>
+        <div className="flex gap-2 shrink-0">
+          <button
+            onClick={handleCancel}
+            className="px-4 py-2 border border-gray-300 text-gray-700 text-sm font-medium rounded-lg hover:bg-gray-50 transition-colors"
+          >
+            Cancel
+          </button>
+          <button
+            onClick={handleSave}
+            disabled={isLoading}
+            className="px-4 py-2 bg-indigo-600 text-white text-sm font-medium rounded-lg hover:bg-indigo-700 transition-colors disabled:opacity-50"
+          >
+            {isLoading ? "Saving..." : "Save Changes"}
+          </button>
+        </div>
       </div>
 
-      {/* Name */}
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">
-          Full Name
-        </label>
-        <input
-          type="text"
-          value={editedData.name}
-          onChange={(e) => handleChange("name", e.target.value)}
-          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
-        />
-      </div>
+      <div className="px-6 py-5 space-y-5 overflow-y-auto">
+        {/* Basic Info */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label className={labelClass}>Full Name</label>
+            <input
+              type="text"
+              value={editedData.name}
+              onChange={(e) => handleChange("name", e.target.value)}
+              className={inputClass}
+            />
+          </div>
+          <div>
+            <label className={labelClass}>Email</label>
+            <input
+              type="email"
+              value={editedData.email || ""}
+              onChange={(e) => handleChange("email", e.target.value || null)}
+              className={inputClass}
+              placeholder="optional"
+            />
+          </div>
+          <div>
+            <label className={labelClass}>Phone</label>
+            <input
+              type="tel"
+              value={editedData.phone || ""}
+              onChange={(e) => handleChange("phone", e.target.value || null)}
+              className={inputClass}
+              placeholder="optional"
+            />
+          </div>
+          <div>
+            <label className={labelClass}>Years of Experience</label>
+            <input
+              type="number"
+              value={editedData.experienceYears}
+              onChange={(e) =>
+                handleChange("experienceYears", parseInt(e.target.value) || 0)
+              }
+              min="0"
+              className={inputClass}
+            />
+          </div>
+          <div>
+            <label className={labelClass}>Current Role</label>
+            <input
+              type="text"
+              value={editedData.currentRole || ""}
+              onChange={(e) =>
+                handleChange("currentRole", e.target.value || null)
+              }
+              className={inputClass}
+              placeholder="e.g., Senior Software Engineer"
+            />
+          </div>
+          <div>
+            <label className={labelClass}>Industry / Domain</label>
+            <input
+              type="text"
+              value={editedData.industry || ""}
+              onChange={(e) =>
+                handleChange("industry", e.target.value || null)
+              }
+              className={inputClass}
+              placeholder="e.g., Software Engineering"
+            />
+          </div>
+          <div className="sm:col-span-2">
+            <label className={labelClass}>Education</label>
+            <input
+              type="text"
+              value={editedData.education}
+              onChange={(e) => handleChange("education", e.target.value)}
+              className={inputClass}
+              placeholder="e.g., B.Tech Computer Science"
+            />
+          </div>
+        </div>
 
-      {/* Email */}
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">
-          Email
-        </label>
-        <input
-          type="email"
-          value={editedData.email || ""}
-          onChange={(e) => handleChange("email", e.target.value || null)}
-          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
-          placeholder="optional"
-        />
-      </div>
+        {/* Skills */}
+        <div>
+          <label className={labelClass}>Skills (comma-separated)</label>
+          <textarea
+            value={editedData.skills.join(", ")}
+            onChange={(e) => handleSkillsChange(e.target.value)}
+            rows={2}
+            className={`${inputClass} font-mono resize-none`}
+            placeholder="React, Node.js, Python, Leadership, Problem Solving"
+          />
+        </div>
 
-      {/* Phone */}
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">
-          Phone
-        </label>
-        <input
-          type="tel"
-          value={editedData.phone || ""}
-          onChange={(e) => handleChange("phone", e.target.value || null)}
-          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
-          placeholder="optional"
-        />
-      </div>
+        {/* Job Titles */}
+        <div>
+          <label className={labelClass}>Job Titles (comma-separated)</label>
+          <textarea
+            value={editedData.jobTitles?.join(", ") || ""}
+            onChange={(e) => handleJobTitlesChange(e.target.value)}
+            rows={2}
+            className={`${inputClass} font-mono resize-none`}
+            placeholder="Software Engineer, Senior Developer, Tech Lead"
+          />
+        </div>
 
-      {/* Experience Years */}
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">
-          Years of Experience
-        </label>
-        <input
-          type="number"
-          value={editedData.experienceYears}
-          onChange={(e) => handleChange("experienceYears", parseInt(e.target.value) || 0)}
-          min="0"
-          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
-        />
-      </div>
-
-      {/* Current Role */}
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">
-          Current Role
-        </label>
-        <input
-          type="text"
-          value={editedData.currentRole || ""}
-          onChange={(e) => handleChange("currentRole", e.target.value || null)}
-          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
-          placeholder="e.g., Senior Software Engineer"
-        />
-      </div>
-
-      {/* Industry */}
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">
-          Industry / Domain
-        </label>
-        <input
-          type="text"
-          value={editedData.industry || ""}
-          onChange={(e) => handleChange("industry", e.target.value || null)}
-          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
-          placeholder="e.g., Software Engineering, Finance, Healthcare"
-        />
-      </div>
-
-      {/* Education */}
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">
-          Education
-        </label>
-        <input
-          type="text"
-          value={editedData.education}
-          onChange={(e) => handleChange("education", e.target.value)}
-          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
-          placeholder="e.g., B.Tech Computer Science"
-        />
-      </div>
-
-      {/* Skills */}
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">
-          Skills (comma-separated)
-        </label>
-        <textarea
-          value={editedData.skills.join(", ")}
-          onChange={(e) => handleSkillsChange(e.target.value)}
-          rows={3}
-          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent font-mono text-sm"
-          placeholder="React, Node.js, Python, Leadership, Problem Solving"
-        />
-      </div>
-
-      {/* Job Titles */}
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">
-          Job Titles (comma-separated)
-        </label>
-        <textarea
-          value={editedData.jobTitles?.join(", ") || ""}
-          onChange={(e) => handleJobTitlesChange(e.target.value)}
-          rows={2}
-          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent font-mono text-sm"
-          placeholder="Software Engineer, Senior Developer, Tech Lead"
-        />
-      </div>
-
-      {/* Summary */}
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">
-          Professional Summary
-        </label>
-        <textarea
-          value={editedData.summary}
-          onChange={(e) => handleChange("summary", e.target.value)}
-          rows={3}
-          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
-        />
-      </div>
-
-      {/* Action Buttons */}
-      <div className="flex gap-3 pt-4 border-t border-gray-200">
-        <button
-          onClick={handleCancel}
-          className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 font-medium rounded-lg hover:bg-gray-50 transition-colors"
-        >
-          Cancel
-        </button>
-        <button
-          onClick={handleSave}
-          disabled={isLoading}
-          className="flex-1 px-4 py-2 bg-indigo-600 text-white font-medium rounded-lg hover:bg-indigo-700 transition-colors disabled:opacity-50"
-        >
-          {isLoading ? "Saving..." : "Save Changes"}
-        </button>
+        {/* Summary */}
+        <div>
+          <label className={labelClass}>Professional Summary</label>
+          <textarea
+            value={editedData.summary}
+            onChange={(e) => handleChange("summary", e.target.value)}
+            rows={3}
+            className={`${inputClass} resize-none`}
+          />
+        </div>
       </div>
     </div>
   );

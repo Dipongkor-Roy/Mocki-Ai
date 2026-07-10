@@ -98,7 +98,7 @@ export default function HeroOne() {
                   src="https://my.spline.design/interactiveaiwebsite-wtWdv2EaO3yGXzCOYmueDAms/"
                   width="100%"
                   height="100%"
-                  style={{ backgroundColor: "transparent" }}
+                  style={{ backgroundColor: "transparent", pointerEvents: "none" }}
                 ></iframe>
               </div>
               {/* Floating Icon */}
@@ -163,8 +163,8 @@ export default function HeroOne() {
       <div className="max-w-screen-xl mx-auto px-3 sm:px-6 md:px-14 lg:px-14 xl:px-18 2xl:px-20 pb-0 lg:pt-24 pt-12 py-0">
         <PageTitle3
           badgeText=""
-          title="Trusted by 150,000+ content creators agencies"
-          subtitle="Quizzes are working for them — and they can for you too."
+          title="Powered by Advanced AI"
+          subtitle="Real voice conversations, analyzed by AI that actually understands your answers."
           widthClass="w-full xl:w-2/3 lg:w-2/3 mx-auto"
           alignment="center"
           padding="pb-16"

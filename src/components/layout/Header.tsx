@@ -66,11 +66,11 @@ const Header = ({
         <div
           className={`${headerClass === "bg-color-none" ? "bg-gray-200 rounded-xl px-4 shadow-md" : ""}`}
         >
-          <nav className="flex items-center justify-between w-full relative">
+          <nav className="flex items-center justify-between lg:grid lg:grid-cols-[auto_1fr_auto] w-full relative">
             {/* Logo */}
             <Link
               href="/"
-              className="flex items-center jutstify-between lg:py-2 py-3 mr-5"
+              className="flex items-center jutstify-between lg:py-2 py-3 lg:mr-0 mr-5"
             >
               {/* Light Logo */}
               <Image
@@ -113,7 +113,7 @@ const Header = ({
             />
 
             {/* Right Icons */}
-            <div className="flex items-center justify-between w-auto space-x-3">
+            <div className="flex items-center justify-end lg:justify-between w-auto space-x-3">
               <div className="flex items-center space-x-3">
                 {/* Search Button */}
 

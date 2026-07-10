@@ -5,6 +5,7 @@ import type { CVData } from "@/lib/cv/extract-with-gemini";
 import InterviewSession, { type InterviewAnswer } from "./InterviewSession";
 import InterviewReport from "./InterviewReport";
 import type { InterviewEvaluation } from "@/lib/cv/evaluate-interview";
+import { mockInterviewEvaluation } from "@/lib/cv/mock-evaluation";
 
 interface InterviewSetupProps {
   cvData: CVData;
@@ -150,6 +151,11 @@ export default function InterviewSetup({
     setShowConfirmModal(false);
     setPermissionStatus("idle");
     setPermissionError("");
+  };
+
+  const handleLoadSampleReport = () => {
+    setEvaluation(mockInterviewEvaluation);
+    setStage("report");
   };
 
   const handleRetryPermission = () => {
@@ -444,6 +450,15 @@ export default function InterviewSetup({
         >
           🎤 Start Interview
         </button>
+
+        {process.env.NODE_ENV === "development" && (
+          <button
+            onClick={handleLoadSampleReport}
+            className="w-full px-4 py-2.5 border border-dashed border-gray-300 text-gray-500 text-sm font-medium rounded-lg hover:bg-gray-50 transition-all"
+          >
+            🧪 Load Sample Report (dev only)
+          </button>
+        )}
       </div>
 
       {/* Confirmation Modal */}

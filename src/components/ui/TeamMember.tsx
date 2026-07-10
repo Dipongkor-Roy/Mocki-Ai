@@ -16,6 +16,8 @@ interface TeamMemberProps {
     role: string;
     image: string;
     imageAlt?: string;
+    imageWidth?: number;
+    imageHeight?: number;
     socials?: SocialLink[];
     delay?: number; // AOS animation delay
     variant?: "default" | "overlay"; // NEW
@@ -26,6 +28,8 @@ export default function TeamMember({
     role,
     image,
     imageAlt = "team member",
+    imageWidth = 400,
+    imageHeight = 450,
     socials = [],
     delay = 100,
     variant = "default",
@@ -39,7 +43,10 @@ export default function TeamMember({
         >
             <div className="flex flex-col gap-3">
                 {/* Image + Socials */}
-                <div className="relative overflow-hidden rounded-2xl group">
+                <div
+                    className="relative overflow-hidden rounded-2xl group w-full"
+                    style={{ aspectRatio: `${imageWidth} / ${imageHeight}` }}
+                >
                     {/* Gradient overlay only for overlay variant */}
                     {variant === "overlay" && (
                         <div className="absolute inset-0 z-10 pointer-events-none bg-[linear-gradient(180deg,rgba(0,0,0,0.1)_0%,rgba(0,0,0,0.3)_100%)]"></div>
@@ -48,9 +55,9 @@ export default function TeamMember({
                     <Image
                         src={image}
                         alt={imageAlt}
-                        width={400} // set a default width
-                        height={450} // set a default height
-                        className="w-full h-auto object-cover"
+                        fill
+                        sizes="(max-width: 768px) 100vw, 25vw"
+                        className="object-cover"
                         loading="lazy"
                     />
 

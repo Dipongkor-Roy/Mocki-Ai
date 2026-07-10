@@ -27,7 +27,7 @@ export default function DashboardClient({
     <div
       className={
         isReportStage && cvData
-          ? "max-w-4xl mx-auto"
+          ? ""
           : "grid grid-cols-1 lg:grid-cols-3 gap-6"
       }
     >

@@ -19,9 +19,11 @@ function ScoreBadge({ label, score }: { label: string; score: number }) {
         : "text-red-700 bg-red-50 border-red-200";
 
   return (
-    <div className={`rounded-lg border px-3 py-2 text-center ${color}`}>
+    <div className={`rounded-lg border px-2 py-2 text-center ${color}`}>
       <p className="text-xl font-bold">{score}</p>
-      <p className="text-[11px] font-medium mt-0.5">{label}</p>
+      <p className="text-[11px] font-medium mt-0.5 leading-tight break-words">
+        {label}
+      </p>
     </div>
   );
 }
@@ -53,15 +55,11 @@ export default function InterviewReport({
     if (!node) return;
     setDownloading(true);
 
-    // Temporarily remove the scroll clipping so the full report is captured
-    const prevMaxHeight = node.style.maxHeight;
-    const prevOverflow = node.style.overflowY;
-    node.style.maxHeight = "none";
-    node.style.overflowY = "visible";
-
     try {
-      const [{ default: jsPDF }, { default: html2canvas }] =
-        await Promise.all([import("jspdf"), import("html2canvas-pro")]);
+      const [{ default: jsPDF }, { default: html2canvas }] = await Promise.all([
+        import("jspdf"),
+        import("html2canvas-pro"),
+      ]);
 
       const canvas = await html2canvas(node, {
         scale: 2,
@@ -94,191 +92,189 @@ export default function InterviewReport({
       console.error("Failed to generate PDF:", error);
       alert("Failed to generate PDF. Please try again.");
     } finally {
-      node.style.maxHeight = prevMaxHeight;
-      node.style.overflowY = prevOverflow;
       setDownloading(false);
     }
   };
 
   return (
-    <div className="rounded-2xl bg-gray-100 p-4 sm:p-8">
-      <div className="mx-auto max-w-3xl mb-4 flex justify-end">
-        <button
-          onClick={handleDownloadPdf}
-          disabled={downloading}
-          className="px-4 py-2 rounded-lg bg-indigo-600 text-white text-sm font-semibold hover:bg-indigo-700 transition-all shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
-        >
-          {downloading ? "Generating PDF..." : "⬇ Download as PDF"}
-        </button>
-      </div>
-      <div
-        ref={reportRef}
-        className="mx-auto max-w-3xl max-h-[80vh] overflow-y-auto rounded-lg bg-white p-8 sm:p-12 shadow-md ring-1 ring-gray-200"
-      >
-      <div className="mb-6 flex items-center justify-between border-b border-gray-100 pb-4">
-        <div>
-          <h2 className="text-lg font-semibold text-gray-900">
-            Interview Report
-          </h2>
-          <p className="text-xs text-gray-500 mt-1">
-            {candidateName ? `${candidateName} · ` : ""}
-            {industry} · {level}
-          </p>
+    <div
+      ref={reportRef}
+      className="mx-auto rounded-lg bg-white p-5 sm:p-8 md:p-12 shadow-md ring-1 ring-gray-200 overflow-x-hidden"
+    >
+        <div className="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 border-b border-gray-100 pb-4">
+          <div>
+            <h2 className="text-lg font-semibold text-gray-900">
+              Interview Report
+            </h2>
+            <p className="text-xs text-gray-500 mt-1">
+              {candidateName ? `${candidateName} · ` : ""}
+              {industry} · {level}
+            </p>
+          </div>
+          <button
+            onClick={handleDownloadPdf}
+            disabled={downloading}
+            data-html2canvas-ignore="true"
+            className="px-4 py-2 rounded-lg bg-indigo-600 text-white text-sm font-semibold hover:bg-indigo-700 transition-all shadow-sm disabled:opacity-50 disabled:cursor-not-allowed shrink-0 w-full sm:w-auto"
+          >
+            {downloading ? "Generating PDF..." : "⬇ Download as PDF"}
+          </button>
         </div>
-      </div>
 
-      {/* Overall Score */}
-      <div className="mb-6 p-5 rounded-xl bg-gradient-to-r from-indigo-50 to-blue-50 border border-indigo-100 flex items-center justify-between">
-        <div>
-          <p className="text-sm text-gray-600">Overall Score</p>
-          <p className="text-4xl font-bold text-indigo-700 mt-1">
-            {overallScore}
-            <span className="text-lg text-gray-400">/100</span>
-          </p>
+        {/* Overall Score */}
+        <div className="mb-6 p-5 rounded-xl bg-gradient-to-r from-indigo-50 to-blue-50 border border-indigo-100 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+          <div>
+            <p className="text-sm text-gray-600">Overall Score</p>
+            <p className="text-4xl font-bold text-indigo-700 mt-1">
+              {overallScore}
+              <span className="text-lg text-gray-400">/100</span>
+            </p>
+          </div>
+          <div className="grid grid-cols-3 gap-2">
+            <ScoreBadge label="Technical" score={technicalScore} />
+            <ScoreBadge label="Communication" score={communicationScore} />
+            <ScoreBadge label="Confidence" score={confidenceScore} />
+          </div>
         </div>
-        <div className="grid grid-cols-3 gap-2">
-          <ScoreBadge label="Technical" score={technicalScore} />
-          <ScoreBadge label="Communication" score={communicationScore} />
-          <ScoreBadge label="Confidence" score={confidenceScore} />
-        </div>
-      </div>
 
-      {/* Summary + Recommendation */}
-      <div className="mb-6 space-y-3">
-        <div>
-          <h3 className="text-sm font-semibold text-gray-900 mb-1">Summary</h3>
-          <p className="text-sm text-gray-700">{summary}</p>
+        {/* Summary + Recommendation */}
+        <div className="mb-6 space-y-3">
+          <div>
+            <h3 className="text-sm font-semibold text-gray-900 mb-1">
+              Summary
+            </h3>
+            <p className="text-sm text-gray-700">{summary}</p>
+          </div>
+          <div>
+            <h3 className="text-sm font-semibold text-gray-900 mb-1">
+              Recommendation
+            </h3>
+            <p className="text-sm text-gray-700">{recommendation}</p>
+          </div>
         </div>
-        <div>
-          <h3 className="text-sm font-semibold text-gray-900 mb-1">
-            Recommendation
-          </h3>
-          <p className="text-sm text-gray-700">{recommendation}</p>
-        </div>
-      </div>
 
-      {/* Strengths / Improvements */}
-      <div className="mb-6 grid grid-cols-1 sm:grid-cols-2 gap-4">
-        <div className="p-4 rounded-lg bg-green-50 border border-green-100">
-          <h3 className="text-sm font-semibold text-green-800 mb-2">
-            Strengths
-          </h3>
-          <ul className="space-y-1">
-            {strengths.map((s, idx) => (
-              <li key={idx} className="text-sm text-green-900 flex gap-2">
-                <span>✓</span>
-                <span>{s}</span>
-              </li>
-            ))}
-          </ul>
-        </div>
-        <div className="p-4 rounded-lg bg-amber-50 border border-amber-100">
-          <h3 className="text-sm font-semibold text-amber-800 mb-2">
-            Areas to Improve
-          </h3>
-          <ul className="space-y-1">
-            {improvements.map((s, idx) => (
-              <li key={idx} className="text-sm text-amber-900 flex gap-2">
-                <span>→</span>
-                <span>{s}</span>
-              </li>
-            ))}
-          </ul>
-        </div>
-      </div>
-
-      {/* Confidence Evaluation Breakdown */}
-      <div className="mb-6">
-        <h3 className="text-sm font-semibold text-gray-900 mb-3">
-          Confidence Evaluation
-        </h3>
-        <div className="rounded-lg border border-gray-100 overflow-hidden">
-          <table className="w-full text-sm">
-            <thead>
-              <tr className="bg-gray-50 text-gray-600">
-                <th className="text-left font-medium px-4 py-2">Activity</th>
-                <th className="text-right font-medium px-4 py-2">Score</th>
-              </tr>
-            </thead>
-            <tbody>
-              {confidenceActivities.map((c, idx) => (
-                <tr
-                  key={idx}
-                  className={idx % 2 === 0 ? "bg-white" : "bg-gray-50/50"}
-                >
-                  <td className="px-4 py-2 text-gray-800">{c.activity}</td>
-                  <td
-                    className={`px-4 py-2 text-right font-semibold ${
-                      c.points >= 0 ? "text-green-600" : "text-red-600"
-                    }`}
-                  >
-                    {c.points >= 0 ? `+${c.points}` : c.points}
-                  </td>
-                </tr>
+        {/* Strengths / Improvements */}
+        <div className="mb-6 grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className="p-4 rounded-lg bg-green-50 border border-green-100">
+            <h3 className="text-sm font-semibold text-green-800 mb-2">
+              Strengths
+            </h3>
+            <ul className="space-y-1">
+              {strengths.map((s, idx) => (
+                <li key={idx} className="text-sm text-green-900 flex gap-2">
+                  <span>✓</span>
+                  <span>{s}</span>
+                </li>
               ))}
-            </tbody>
-          </table>
+            </ul>
+          </div>
+          <div className="p-4 rounded-lg bg-amber-50 border border-amber-100">
+            <h3 className="text-sm font-semibold text-amber-800 mb-2">
+              Areas to Improve
+            </h3>
+            <ul className="space-y-1">
+              {improvements.map((s, idx) => (
+                <li key={idx} className="text-sm text-amber-900 flex gap-2">
+                  <span>→</span>
+                  <span>{s}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
         </div>
-      </div>
 
-      {/* Per-Question Breakdown */}
-      <div>
-        <h3 className="text-sm font-semibold text-gray-900 mb-3">
-          Question-by-Question Breakdown
-        </h3>
-        <div className="space-y-3">
-          {answerEvaluations.map((a, idx) => (
-            <div
-              key={idx}
-              className={`p-4 rounded-lg border ${
-                a.skipped
-                  ? "bg-gray-50 border-gray-200"
-                  : "bg-white border-gray-100"
-              }`}
-            >
-              <div className="flex items-start justify-between gap-3">
-                <p className="text-sm font-semibold text-gray-900">
-                  Q{idx + 1}. {a.question}
-                </p>
-                {a.skipped && (
-                  <span className="flex-shrink-0 text-[11px] font-semibold px-2 py-0.5 rounded-full bg-amber-100 text-amber-700">
-                    Skipped
-                  </span>
+        {/* Confidence Evaluation Breakdown */}
+        <div className="mb-6">
+          <h3 className="text-sm font-semibold text-gray-900 mb-3">
+            Confidence Evaluation
+          </h3>
+          <div className="rounded-lg border border-gray-100 overflow-hidden">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="bg-gray-50 text-gray-600">
+                  <th className="text-left font-medium px-4 py-2">Activity</th>
+                  <th className="text-right font-medium px-4 py-2">Score</th>
+                </tr>
+              </thead>
+              <tbody>
+                {confidenceActivities.map((c, idx) => (
+                  <tr
+                    key={idx}
+                    className={idx % 2 === 0 ? "bg-white" : "bg-gray-50/50"}
+                  >
+                    <td className="px-4 py-2 text-gray-800">{c.activity}</td>
+                    <td
+                      className={`px-4 py-2 text-right font-semibold ${
+                        c.points >= 0 ? "text-green-600" : "text-red-600"
+                      }`}
+                    >
+                      {c.points >= 0 ? `+${c.points}` : c.points}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        {/* Per-Question Breakdown */}
+        <div>
+          <h3 className="text-sm font-semibold text-gray-900 mb-3">
+            Question-by-Question Breakdown
+          </h3>
+          <div className="space-y-3">
+            {answerEvaluations.map((a, idx) => (
+              <div
+                key={idx}
+                className={`p-4 rounded-lg border ${
+                  a.skipped
+                    ? "bg-gray-50 border-gray-200"
+                    : "bg-white border-gray-100"
+                }`}
+              >
+                <div className="flex items-start justify-between gap-3">
+                  <p className="text-sm font-semibold text-gray-900">
+                    Q{idx + 1}. {a.question}
+                  </p>
+                  {a.skipped && (
+                    <span className="flex-shrink-0 text-[11px] font-semibold px-2 py-0.5 rounded-full bg-amber-100 text-amber-700">
+                      Skipped
+                    </span>
+                  )}
+                </div>
+
+                {a.skipped ? (
+                  <p className="text-sm text-gray-400 italic mt-2">
+                    No answer was given for this question.
+                  </p>
+                ) : (
+                  <>
+                    <p className="text-sm text-gray-700 mt-2">
+                      {a.transcript || (
+                        <span className="text-gray-400 italic">
+                          No transcript captured
+                        </span>
+                      )}
+                    </p>
+                    <div className="flex flex-wrap gap-2 mt-3">
+                      <span className="text-xs px-2 py-1 rounded-full bg-indigo-50 text-indigo-700 font-medium">
+                        Relevance: {a.relevance}
+                      </span>
+                      <span className="text-xs px-2 py-1 rounded-full bg-blue-50 text-blue-700 font-medium">
+                        Clarity: {a.clarity}
+                      </span>
+                      <span className="text-xs px-2 py-1 rounded-full bg-purple-50 text-purple-700 font-medium">
+                        Confidence: {a.confidence}
+                      </span>
+                    </div>
+                    <p className="text-xs text-gray-500 mt-2">{a.feedback}</p>
+                  </>
                 )}
               </div>
-
-              {a.skipped ? (
-                <p className="text-sm text-gray-400 italic mt-2">
-                  No answer was given for this question.
-                </p>
-              ) : (
-                <>
-                  <p className="text-sm text-gray-700 mt-2">
-                    {a.transcript || (
-                      <span className="text-gray-400 italic">
-                        No transcript captured
-                      </span>
-                    )}
-                  </p>
-                  <div className="flex flex-wrap gap-2 mt-3">
-                    <span className="text-xs px-2 py-1 rounded-full bg-indigo-50 text-indigo-700 font-medium">
-                      Relevance: {a.relevance}
-                    </span>
-                    <span className="text-xs px-2 py-1 rounded-full bg-blue-50 text-blue-700 font-medium">
-                      Clarity: {a.clarity}
-                    </span>
-                    <span className="text-xs px-2 py-1 rounded-full bg-purple-50 text-purple-700 font-medium">
-                      Confidence: {a.confidence}
-                    </span>
-                  </div>
-                  <p className="text-xs text-gray-500 mt-2">{a.feedback}</p>
-                </>
-              )}
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
       </div>
-      </div>
-    </div>
   );
 }
+

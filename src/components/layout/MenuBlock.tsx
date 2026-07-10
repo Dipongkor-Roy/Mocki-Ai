@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useState } from "react";
+import { useAuth } from "@clerk/nextjs";
 import { ChevronDown, X, ArrowUpRight } from "react-feather";
 import Image from "next/image";
 
@@ -104,6 +105,7 @@ const MenuBlock: React.FC<MenuBlockProps> = ({
   btnlinkColor = "text-white",
 }) => {
   const [openSubMenu, setOpenSubMenu] = useState<Record<string, boolean>>({});
+  const { isSignedIn, isLoaded } = useAuth();
 
   const toggleSubMenu = (key: string) => {
     setOpenSubMenu((prev) => ({ ...prev, [key]: !prev[key] }));
@@ -119,7 +121,7 @@ const MenuBlock: React.FC<MenuBlockProps> = ({
   return (
     <>
       {/* Desktop Menu */}
-      <ul className="hidden lg:flex gap-6 font-semibold text-[17px] main-menu">
+      <ul className="hidden lg:flex lg:justify-center gap-6 font-semibold text-[17px] main-menu">
         {menuItems.map((item, index) =>
           item.subMenu ? (
             // Normal dropdown menu
@@ -303,14 +305,16 @@ const MenuBlock: React.FC<MenuBlockProps> = ({
             </li>
           ))}
         </ul>
-        <div className="mt-auto p-4">
-          <Link
-            href="/register"
-            className={`flex items-center justify-center gap-3 px-6 py-3  rounded-md text-sm font-medium hover:bg-blue-700 transition-all duration-200 ${btnColor} ${btnlinkColor}`}
-          >
-            Register
-          </Link>
-        </div>
+        {isLoaded && !isSignedIn && (
+          <div className="mt-auto p-4">
+            <Link
+              href="/registers"
+              className={`flex items-center justify-center gap-3 px-6 py-3  rounded-md text-sm font-medium hover:bg-blue-700 transition-all duration-200 ${btnColor} ${btnlinkColor}`}
+            >
+              Sign In
+            </Link>
+          </div>
+        )}
       </div>
     </>
   );

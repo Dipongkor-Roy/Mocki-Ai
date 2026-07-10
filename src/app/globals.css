@@ -455,7 +455,7 @@ body.dark {
     background-image: linear-gradient(to bottom, #f1f1f1, #e2e2e2);
   }
   .bg-home-one-feature {
-    background-image: url("/images/home-9-hero.svg");
+    background-image: url("https://exsit-next.vercel.app/images/banner-bg-5.webp");
   }
 
   .bg-auth-image-one {

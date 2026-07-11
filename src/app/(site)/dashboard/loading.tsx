@@ -1,6 +1,6 @@
 export default function DashboardLoading() {
   return (
-    <div className="relative flex-1 overflow-hidden px-4 py-8 sm:px-6 lg:px-8">
+    <div className="relative flex-1 overflow-hidden px-4 py-4 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-7xl space-y-6 animate-pulse">
         <div className="flex flex-col items-start justify-between gap-4 lg:flex-row lg:items-center">
           <div className="flex items-center gap-4">

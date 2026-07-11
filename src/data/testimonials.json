@@ -3,18 +3,27 @@
         "brand": "/images/brand.svg",
         "brandWidth": 110,
         "brandHeight": 30,
-        "text": "Incredible experience from start to finish. The team is responsive, professional, and genuinely cares about customer satisfaction. A brand I can truly rely on. ",
-        "avatar": "/images/avatars/user.png",
-        "name": "Goria Coast",
-        "role": "Founder and CEO of Exsit"
+        "text": "I used to freeze up the moment an interviewer asked me anything. After a few voice sessions here, hearing myself answer out loud made all the difference. The feedback was blunt but exactly what I needed.",
+        "avatar": "https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&w=120&h=120&dpr=1",
+        "name": "Arif Rahman",
+        "role": "Backend Engineer"
     },
     {
         "brand": "/images/brand.svg",
         "brandWidth": 110,
         "brandHeight": 30,
-        "text": "Being a member has real benefits. I always feel heard, supported, and appreciated. The team is responsive, professional, and genuinely cares about customer satisfaction.",
-        "avatar": "/images/avatars/user.png",
-        "name": "Emily Grace",
-        "role": "Founder and CEO of Exsit"
+        "text": "The report after each session actually pointed out where I rambled and where I was vague. Comparing my scores across attempts kept me motivated to keep practicing before the real interview.",
+        "avatar": "https://images.pexels.com/photos/774909/pexels-photo-774909.jpeg?auto=compress&cs=tinysrgb&w=120&h=120&dpr=1",
+        "name": "Nadia Islam",
+        "role": "ML Engineer"
+    },
+    {
+        "brand": "/images/brand.svg",
+        "brandWidth": 110,
+        "brandHeight": 30,
+        "text": "No scripts to memorize, no typing — just a real question, my voice, and honest AI feedback. It genuinely felt like a warm-up round before the interview that mattered.",
+        "avatar": "https://images.pexels.com/photos/415829/pexels-photo-415829.jpeg?auto=compress&cs=tinysrgb&w=120&h=120&dpr=1",
+        "name": "Tanvir Ahmed",
+        "role": "Frontend Developer"
     }
 ]

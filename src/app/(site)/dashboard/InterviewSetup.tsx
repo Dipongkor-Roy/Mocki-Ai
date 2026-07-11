@@ -338,7 +338,7 @@ export default function InterviewSetup({
   }
 
   return (
-    <div className="rounded-2xl bg-white p-6 shadow-sm ring-1 ring-gray-100">
+    <div className="lg:h-full min-h-[500px] lg:min-h-[550px] flex flex-col rounded-2xl bg-white p-6 shadow-sm ring-1 ring-gray-100">
       <div className="mb-6">
         <h2 className="text-lg font-semibold text-gray-900">Interview Setup</h2>
         <p className="text-sm text-gray-500 mt-1">

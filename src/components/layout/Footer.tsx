@@ -70,11 +70,10 @@ export default function Footer({
       <div className="max-w-screen-xl mx-auto px-3 sm:px-6 md:px-14 lg:px-14 xl:px-18 2xl:px-3 pb-0">
         {/* Top Section */}
         {layout === "default" || layout === "light" ? (
-          <div className="flex flex-wrap gap-y-4 footer-wrap-top lg:py-14 py-6">
-            {/* Logo */}
-            <div className="flex items-center w-full 2xl:w-3/6 xl:w-1/3 lg:w-1/3">
-              {/* Logo */}
-              <Link href="/" className="flex items-center lg:py-2 py-3 mr-5">
+          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6 footer-wrap-top lg:py-14 py-8">
+            {/* Logo + tagline */}
+            <div className="flex flex-col gap-3 w-full lg:max-w-md">
+              <Link href="/" className="flex items-center">
                 <Image
                   src={logo}
                   alt="logo"
@@ -95,45 +94,28 @@ export default function Footer({
                   {brandName}
                 </h2>
               </Link>
+              <p
+                className={`text-base leading-relaxed ${layout === "light" ? "text-gray-600" : "text-gray-400"}`}
+              >
+                Voice-based AI mock interviews. Practice out loud, get honest
+                feedback, and walk into the real thing with confidence — free.
+              </p>
             </div>
 
-            {/* Contact Info */}
-            <div className="w-full 2xl:w-3/6 xl:w-2/3 lg:w-2/3">
-              <div className="flex flex-wrap gap-y-3">
-                {/* Phone */}
-                <div className="flex flex-row gap-3 items-center w-full md:w-1/2">
-                  <div className={`${iconbgColor} p-3 rounded-full`}>
-                    <Phone size={22} className={` ${foretextColor} `} />
-                  </div>
-                  <div>
-                    <p
-                      className={`text-2xl font-semibold mb-0 ${layout === "light" ? "text-gray-900" : "text-white"}`}
-                    >
-                      +98 (7765) 3422
-                    </p>
-                    <p className="text-base font-medium text-gray-400">
-                      Speak with our team
-                    </p>
-                  </div>
-                </div>
-
-                {/* Email */}
-                <div className="flex flex-row gap-3 items-center w-full md:w-1/2">
-                  <div className={`${iconbgColor} p-3 rounded-full`}>
-                    <Mail size={22} className={` ${foretextColor} `} />
-                  </div>
-                  <div>
-                    <p
-                      className={`text-2xl font-semibold mb-0 ${layout === "light" ? "text-gray-900" : "text-white"}`}
-                    >
-                      chat@uitheme.shop
-                    </p>
-                    <p className="text-base font-medium text-gray-400">
-                      Chat with our team
-                    </p>
-                  </div>
-                </div>
-              </div>
+            {/* Primary CTA */}
+            <div className="flex flex-col sm:flex-row gap-3">
+              <Link
+                href="/dashboard"
+                className={`px-6 py-3 rounded-md text-center font-medium transition ${foretextColor} ${foreColor} ${hoverClass}`}
+              >
+                Start practicing free
+              </Link>
+              <Link
+                href="/about"
+                className={`px-6 py-3 rounded-md text-center font-medium border transition ${layout === "light" ? "text-gray-900 border-gray-300 hover:bg-gray-100" : "text-white border-gray-700 hover:bg-gray-800"}`}
+              >
+                How it works
+              </Link>
             </div>
           </div>
         ) : layout === "classic" ? (
@@ -235,12 +217,13 @@ export default function Footer({
               <h3
                 className={`lg:text-[32px] md:text-3xl text-2xl font-semibold tracking-tight mb-2 ${layout === "light" ? "text-gray-900" : layout === "default" ? "text-white" : ""}`}
               >
-                Our newsletter delivers fresh updates to your inbox
+                Get interview tips straight to your inbox
               </h3>
               <p
                 className={`mb-5 ${layout === "light" ? "text-gray-700" : "text-gray-400"}`}
               >
-                A weekly digest of latest news, articles and resources
+                Occasional emails with practice prompts and ways to sound sharper
+                in your next interview. No spam.
               </p>
               <div className="flex flex-col sm:flex-row gap-3 mt-2 mb-4">
                 <input
@@ -586,73 +569,61 @@ export default function Footer({
             <div className="grid grid-cols-3 sm:grid-cols-3 gap-6">
               <div>
                 <h4 className="text-lg font-medium text-gray-400 dark:text-gray-100 mb-5">
-                  Pages
+                  Product
                 </h4>
                 <ul
                   className={`${layout === "modern" ? "" : layout === "light" ? "text-gray-900" : "text-gray-400"} footer-link flex flex-col gap-3 text-sm`}
                 >
                   <li>
-                    <Link href="#">Who We Are</Link>
+                    <Link href="/dashboard">Start an interview</Link>
                   </li>
                   <li>
-                    <Link href="#">Our Service</Link>
+                    <Link href="/dashboard/history">Your history</Link>
                   </li>
                   <li>
-                    <Link href="#">Affordable Pricing</Link>
+                    <Link href="/about">How it works</Link>
                   </li>
                   <li>
-                    <Link href="#">Our Members</Link>
-                  </li>
-                  <li>
-                    <Link href="#">Explore Career</Link>
+                    <Link href="/changelog">Changelog</Link>
                   </li>
                 </ul>
               </div>
               <div>
                 <h4 className="text-lg font-medium text-gray-400 mb-5">
-                  Company
+                  Resources
                 </h4>
                 <ul
                   className={`${layout === "modern" ? "" : layout === "light" ? "text-gray-900" : "text-gray-400"} footer-link flex flex-col gap-3 text-sm`}
                 >
                   <li>
-                    <Link href="#">Our Blog</Link>
+                    <Link href="/blog-1">Blog</Link>
                   </li>
                   <li>
-                    <Link href="#">Shop Page</Link>
+                    <Link href="/about">About</Link>
                   </li>
                   <li>
-                    <Link href="#">Single Product</Link>
+                    <Link href="/contact">Contact</Link>
                   </li>
                   <li>
-                    <Link href="#">Order Status</Link>
-                  </li>
-                  <li>
-                    <Link href="#">Coming Soon</Link>
+                    <Link href="/#faq">FAQ</Link>
                   </li>
                 </ul>
               </div>
               <div>
                 <h4 className="text-lg font-medium text-gray-400 mb-5">
-                  Connects
+                  Legal
                 </h4>
                 <ul
                   className={`${layout === "modern" ? "" : layout === "light" ? "text-gray-900" : "text-gray-400"} footer-link flex flex-col gap-3 text-sm`}
                 >
                   <li>
-                    <Link href="#">Terms of service</Link>
+                    <Link href="/terms">Terms of service</Link>
                   </li>
                   <li>
-                    <Link href="#">Privacy policy</Link>
+                    <Link href="/privacy">Privacy policy</Link>
                   </li>
                   <li>
-                    <Link href="#">Contact us</Link>
-                  </li>
-                  <li>
-                    <Link href="#">Cookie Policy</Link>
-                  </li>
-                  <li>
-                    <Link href="#">FAQ</Link>
+                    <Link href="/contact">Contact us</Link>
                   </li>
                 </ul>
               </div>
@@ -742,7 +713,8 @@ export default function Footer({
         ) : (
           <div className="text-center lg:py-7 py-4">
             <p className="text-gray-400 text-base font-medium py-2">
-              Exsit SaaS © 2025 - All Rights Reserved
+              {brandName} © {new Date().getFullYear()} — A free interview
+              practice project. Built with Next.js &amp; AI.
             </p>
           </div>
         )}

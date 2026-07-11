@@ -274,7 +274,7 @@ export default function InterviewSession({
       {/* Body: stacked on mobile, two columns on desktop */}
       <div className="flex flex-1 flex-col overflow-y-auto lg:flex-row lg:overflow-hidden">
         {/* Left — question + transcript */}
-        <div className="flex min-h-0 flex-1 flex-col border-[#252A40] p-4 sm:p-7 lg:border-r">
+        <div className="flex flex-col border-[#252A40] p-4 sm:p-7 lg:min-h-0 lg:flex-1 lg:overflow-hidden lg:border-r">
           <span className="mb-4 inline-flex w-fit items-center gap-1.5 rounded-md border border-[#7C6FFF]/25 bg-[#7C6FFF]/12 px-2.5 py-1 text-[11px] font-bold text-[#B0A8FF]">
             ⚙ Interview Question — {currentIndex + 1} of {questions.length}
           </span>
@@ -283,7 +283,7 @@ export default function InterviewSession({
             {questions[currentIndex]}
           </h2>
 
-          <div className="flex min-h-[160px] flex-1 flex-col overflow-hidden rounded-lg border border-[#7C6FFF]/60 bg-[#181C2C] p-4">
+          <div className="flex h-[280px] flex-shrink-0 flex-col overflow-hidden rounded-lg border border-[#7C6FFF]/60 bg-[#181C2C] p-4 lg:h-auto lg:min-h-[160px] lg:flex-1">
             <span className="mb-2 block text-[10px] font-bold uppercase tracking-wider text-[#7C6FFF]">
               🎙 Live Transcript
             </span>

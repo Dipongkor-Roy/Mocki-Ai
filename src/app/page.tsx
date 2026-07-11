@@ -58,26 +58,21 @@ export default function HomePage() {
               <CounterCarousel slides={maincarsoul} />
             </div>
             <div className="w-full" data-aos-duration="400" data-aos="fade-up">
-              <div className="overflow-hidden relative rounded-xl h-[350px]">
-                <Image
-                  src="/images/home-bg-3.svg"
-                  alt="about"
-                  width={416}
-                  height={350}
-                  loading="lazy"
-                  className="mx-auto hover:scale-[1.1] transition-all duration-[1s]"
-                />
+              <div className="overflow-hidden relative rounded-xl h-[350px] bg-gradient-to-br from-blue-600 via-indigo-600 to-violet-700 group">
+                {/* Decorative glow */}
+                <div className="absolute -top-16 -right-16 w-56 h-56 rounded-full bg-white/10 blur-2xl transition-transform duration-[1s] group-hover:scale-125"></div>
+                <div className="absolute -bottom-20 -left-10 w-52 h-52 rounded-full bg-cyan-300/20 blur-2xl"></div>
 
-                {/* Content Overlay */}
-                <div className="absolute inset-0 z-10 pointer-events-none bg-[linear-gradient(180deg,rgba(0,0,0,0.1)_0%,rgba(0,0,0,0.5)_100%)]"></div>
+                {/* Overlay for text contrast */}
+                <div className="absolute inset-0 z-10 pointer-events-none bg-[linear-gradient(180deg,rgba(0,0,0,0)_40%,rgba(0,0,0,0.35)_100%)]"></div>
 
-                <div className="absolute bottom-0 left-0 w-full p-5 z-10">
-                  <div className="flex flex-row justify-between px-2">
+                <div className="absolute bottom-0 left-0 w-full p-6 z-20">
+                  <div className="flex flex-row justify-between px-1">
                     <div>
-                      <h3 className="text-white text-6xl font-medium mb-1">
+                      <h3 className="text-white text-7xl font-semibold mb-2 leading-none">
                         9
                       </h3>
-                      <p className="text-gray-200 font-medium text-lg leading-6 mb-0 xl:pr-12">
+                      <p className="text-blue-50 font-medium text-lg leading-6 mb-0 xl:pr-12">
                         Real interview questions per session, answered out loud.
                       </p>
                     </div>
@@ -87,37 +82,43 @@ export default function HomePage() {
             </div>
           </div>
 
-          <div className="grid lg:grid-cols-3 grid-cols-1 gap-6 mb-6">
+          <div className="grid lg:grid-cols-3 grid-cols-1 gap-6 mb-6 items-stretch">
             <div className="w-full" data-aos-duration="400" data-aos="fade-up">
-              <div className="bg-cyan-gradient dark:bg-gray-800 dark:bg-image-none rounded-xl p-5 flex flex-col h-[350px]">
+              <div className="bg-cyan-gradient dark:bg-gray-800 dark:bg-image-none rounded-xl p-5 flex flex-col h-full min-h-[350px]">
                 {/* Avatar group */}
-                <div className="flex -space-x-3 flex-row">
-                  <div className="w-11 h-11 rounded-full overflow-hidden">
+                <div className="flex -space-x-3 flex-row items-center">
+                  <div className="w-11 h-11 rounded-full overflow-hidden ring-2 ring-white">
                     <Image
-                      src="/images/avatars/user.png"
-                      alt="about"
+                      src="https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&dpr=1"
+                      alt="candidate"
                       width={50}
                       height={50}
                       loading="lazy"
+                      className="w-full h-full object-cover"
                     />
                   </div>
-                  <div className="w-11 h-11 rounded-full overflow-hidden">
+                  <div className="w-11 h-11 rounded-full overflow-hidden ring-2 ring-white">
                     <Image
-                      src="/images/avatars/user.png"
-                      alt="about"
+                      src="https://images.pexels.com/photos/415829/pexels-photo-415829.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&dpr=1"
+                      alt="candidate"
                       width={50}
                       height={50}
                       loading="lazy"
+                      className="w-full h-full object-cover"
                     />
                   </div>
-                  <div className="w-11 h-11 rounded-full overflow-hidden">
+                  <div className="w-11 h-11 rounded-full overflow-hidden ring-2 ring-white">
                     <Image
-                      src="/images/avatars/user.png"
-                      alt="about"
+                      src="https://images.pexels.com/photos/774909/pexels-photo-774909.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&dpr=1"
+                      alt="candidate"
                       width={50}
                       height={50}
                       loading="lazy"
+                      className="w-full h-full object-cover"
                     />
+                  </div>
+                  <div className="w-11 h-11 rounded-full ring-2 ring-white bg-gray-900 flex items-center justify-center text-white text-xs font-semibold">
+                    2k+
                   </div>
                 </div>
 
@@ -138,8 +139,8 @@ export default function HomePage() {
               data-aos-duration="400"
               data-aos-delay="0"
             >
-              <div className="feedback-div h-full min-h-[350px] flex bg-gray-200 rounded-lg p-6 relative">
-                <div className="flex-1">
+              <div className="h-full min-h-[350px] flex bg-gray-200 rounded-lg p-6 relative overflow-hidden">
+                <div className="flex-1 min-w-0 flex items-center">
                   <TestimonialCarousel testimonials={testimonials} />
                 </div>
                 <div className="w-[160px] flex-none justify-end hidden xl:flex">
@@ -476,7 +477,10 @@ export default function HomePage() {
         </div>
       </section>
       {/* faq wrap */}
-      <div className="faq-wrap font-dm lg:py-24 py-12 bg-gray-gradient dark:bg-gray-800">
+      <div
+        id="faq"
+        className="faq-wrap font-dm lg:py-24 py-12 bg-gray-gradient dark:bg-gray-800 scroll-mt-24"
+      >
         <div className="max-w-screen-xl mx-auto px-3 sm:px-6 md:px-14 lg:px-14 xl:px-18 2xl:px-3">
           <div className="grid lg:grid-cols-12 xl:gap-24 gap-8">
             {/* Left Side */}
@@ -533,7 +537,9 @@ export default function HomePage() {
         title="Ready to practice out loud?"
         subtitle="Start a mock interview, answer with your voice, and get real feedback in minutes."
         firstButtonLabel="Start your first interview"
+        firstButtonHref="/dashboard"
         secondButtonLabel="See how it works"
+        secondButtonHref="/about"
       />
       {/* footer */}
       <Footer />

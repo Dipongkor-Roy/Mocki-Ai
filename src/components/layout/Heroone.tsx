@@ -51,15 +51,15 @@ export default function HeroOne() {
               {/* CTA Buttons */}
               <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 pt-8 pb-3">
                 <Button
-                  href="/pricing"
-                  label="Start trial for 14 days"
+                  href="/dashboard"
+                  label="Start practicing free"
                   bgColor="bg-blue-600"
                   textColor="text-white"
                   padding="py-4 px-6"
                 />
                 <Button
                   href="/about"
-                  label="Explore more"
+                  label="See how it works"
                   bgColor="bg-gray-900"
                   textColor="text-gray-100"
                   padding="py-4 px-6"

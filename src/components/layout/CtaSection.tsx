@@ -11,9 +11,11 @@ interface CtaSectionProps {
   titleColor?: string;
   subtitleColor?: string;
   firstButtonLabel?: string;
+  firstButtonHref?: string;
   firstButtonBg?: string;
   firstButtonText?: string;
   secondButtonLabel?: string;
+  secondButtonHref?: string;
   secondButtonBg?: string;
   secondButtonText?: string;
   sectionBg?: string; // dynamic background for section
@@ -29,9 +31,11 @@ export default function CtaSection({
   titleColor = "text-gray-900",
   subtitleColor = "text-gray-800",
   firstButtonLabel = "Start trial for 14 days",
+  firstButtonHref = "#",
   firstButtonBg = "bg-blue-600",
   firstButtonText = "text-white",
   secondButtonLabel = "Discover more",
+  secondButtonHref = "#",
   secondButtonBg = "bg-gray-800",
   secondButtonText = "text-white",
   sectionBg = "bg-home-one-gradient-banner", // default section background
@@ -88,12 +92,14 @@ export default function CtaSection({
         {/* Buttons */}
         <div className="flex flex-col sm:flex-row justify-center gap-3 pt-6">
           <Button
+            href={firstButtonHref}
             label={firstButtonLabel}
             bgColor={firstButtonBg}
             textColor={firstButtonText}
             padding="py-4 px-6"
           />
           <Button
+            href={secondButtonHref}
             label={secondButtonLabel}
             bgColor={secondButtonBg}
             textColor={secondButtonText}

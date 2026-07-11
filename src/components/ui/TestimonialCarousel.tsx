@@ -38,15 +38,7 @@ export default function TestimonialCarousel({ testimonials }: Props) {
             >
                 {testimonials.map((t, index) => (
                     <SplideSlide key={index} className="h-full">
-                        <div className="mb-12">
-                            <Image
-                                src={t.brand}
-                                alt="brand"
-                                width={t.brandWidth}
-                                height={t.brandHeight}
-                                className="object-contain"
-                            />
-                        </div>
+                        <div className="mb-12"></div>
                         <p className="text-gray-900 text-2xl font-medium italic leading-tight pe-2">
                             {t.text}
                         </p>

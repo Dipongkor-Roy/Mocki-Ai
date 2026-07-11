@@ -80,7 +80,7 @@ export default function DashboardSidebar({
       <aside
         className={`fixed inset-y-0 left-0 z-50 flex h-full flex-col border-r border-gray-100 bg-white transition-all duration-200 ease-in-out
         ${mobileOpen ? "translate-x-0" : "-translate-x-full"} lg:translate-x-0
-        ${collapsed ? "lg:w-[88px]" : "lg:w-[280px]"} w-[280px]`}
+        ${collapsed ? "lg:w-[76px]" : "lg:w-[240px]"} w-[240px]`}
       >
         {/* Logo row */}
         <div

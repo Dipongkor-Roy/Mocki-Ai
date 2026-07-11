@@ -1,18 +1,17 @@
-
 [
   {
-    "src": "/images/slider-825.svg",
-    "title": "Marketing Analytics",
-    "subtitle": "Development, Marketing"
+    "src": "https://images.pexels.com/photos/5439381/pexels-photo-5439381.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
+    "title": "Speak your answers out loud",
+    "subtitle": "Voice-based practice, just like the real thing"
   },
   {
-    "src": "/images/slider-825.svg",
-    "title": "Content Management",
-    "subtitle": "Development, Marketing"
+    "src": "https://images.pexels.com/photos/4344860/pexels-photo-4344860.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
+    "title": "Instant AI feedback",
+    "subtitle": "Clarity, structure and relevance, scored"
   },
   {
-    "src": "/images/slider-825.svg",
-    "title": "Digital Transformation",
-    "subtitle": "Development, Marketing"
+    "src": "https://images.pexels.com/photos/3184418/pexels-photo-3184418.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
+    "title": "Track every session",
+    "subtitle": "See yourself improve, attempt by attempt"
   }
 ]

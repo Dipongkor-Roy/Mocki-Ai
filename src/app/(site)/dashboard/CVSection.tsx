@@ -124,7 +124,7 @@ export default function CVSection({
   if (cvData) {
     return (
       <div className="rounded-2xl bg-white p-6 shadow-sm ring-1 ring-gray-100 hover:ring-indigo-200 transition-all">
-        <div className="mb-6 flex items-center justify-between border-b border-gray-100 pb-4">
+        <div className="mb-6 flex flex-col gap-3 border-b border-gray-100 pb-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
             <h2 className="text-lg font-semibold text-gray-900">Your CV</h2>
             <p className="text-xs text-gray-500 mt-1">
@@ -134,14 +134,14 @@ export default function CVSection({
           <div className="flex gap-2">
             <button
               onClick={() => setShowPreview(true)}
-              className="px-3 py-1.5 text-sm font-medium bg-indigo-50 text-indigo-600 rounded-lg hover:bg-indigo-100 transition-colors"
+              className="flex-1 sm:flex-none px-3 py-1.5 text-sm font-medium bg-indigo-50 text-indigo-600 rounded-lg hover:bg-indigo-100 transition-colors whitespace-nowrap"
             >
               📋 View Details
             </button>
             <button
               onClick={triggerInput}
               disabled={uploading}
-              className="px-3 py-1.5 text-sm font-medium bg-indigo-50 text-indigo-600 rounded-lg hover:bg-indigo-100 disabled:opacity-50 transition-colors"
+              className="flex-1 sm:flex-none px-3 py-1.5 text-sm font-medium bg-indigo-50 text-indigo-600 rounded-lg hover:bg-indigo-100 disabled:opacity-50 transition-colors whitespace-nowrap"
             >
               {uploading ? "Uploading..." : "Re-upload"}
             </button>
@@ -256,7 +256,9 @@ function InfoRow({ label, value }: { label: string; value: string }) {
       <p className="text-xs uppercase tracking-wide font-semibold text-gray-500">
         {label}
       </p>
-      <p className="text-sm font-semibold text-gray-900 mt-1.5">{value}</p>
+      <p className="text-sm font-semibold text-gray-900 mt-1.5 break-words">
+        {value}
+      </p>
     </div>
   );
 }

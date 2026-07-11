@@ -13,16 +13,16 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   const pathname = usePathname();
-  const hideFooter = pathname?.startsWith("/dashboard");
+  const isDashboard = pathname?.startsWith("/dashboard");
 
   return (
     <div className="font-dm-sans">
-      <Header />
+      {!isDashboard && <Header />}
       <ClerkProvider>
         <main className="flex-1">{children}</main>
       </ClerkProvider>
 
-      {!hideFooter && <Footer />}
+      {!isDashboard && <Footer />}
     </div>
   );
 }

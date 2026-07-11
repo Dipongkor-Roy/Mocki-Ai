@@ -27,6 +27,7 @@ export default async function HistoryDetailPage({
 
   const dbUser = await prisma.user.findUnique({
     where: { clerkId: user.id },
+    select: { id: true },
   });
   if (!dbUser) redirect("/dashboard");
 

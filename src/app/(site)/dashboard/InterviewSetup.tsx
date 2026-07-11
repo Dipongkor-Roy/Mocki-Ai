@@ -452,12 +452,26 @@ export default function InterviewSetup({
         </button>
 
         {process.env.NODE_ENV === "development" && (
-          <button
-            onClick={handleLoadSampleReport}
-            className="w-full px-4 py-2.5 border border-dashed border-gray-300 text-gray-500 text-sm font-medium rounded-lg hover:bg-gray-50 transition-all"
-          >
-            🧪 Load Sample Report (dev only)
-          </button>
+          <>
+            <button
+              onClick={handleLoadSampleReport}
+              className="w-full px-4 py-2.5 border border-dashed border-gray-300 text-gray-500 text-sm font-medium rounded-lg hover:bg-gray-50 transition-all"
+            >
+              🧪 Load Sample Report (dev only)
+            </button>
+            <a
+              href="/dashboard/interview-preview"
+              className="block w-full px-4 py-2.5 border border-dashed border-gray-300 text-gray-500 text-sm font-medium rounded-lg hover:bg-gray-50 transition-all text-center"
+            >
+              🎬 Preview Interview Room UI (dev only)
+            </a>
+            <a
+              href="/dashboard/history-preview"
+              className="block w-full px-4 py-2.5 border border-dashed border-gray-300 text-gray-500 text-sm font-medium rounded-lg hover:bg-gray-50 transition-all text-center"
+            >
+              📋 Preview History Table (dev only)
+            </a>
+          </>
         )}
       </div>
 

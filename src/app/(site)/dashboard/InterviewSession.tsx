@@ -240,84 +240,183 @@ export default function InterviewSession({
   const timeDisplay = `${minutes}:${seconds.toString().padStart(2, "0")}`;
   const isUrgent = secondsLeft <= 10;
 
+  const answeredCount = answersRef.current.length;
+
   return (
-    <div className="fixed inset-0 z-50 bg-gray-900 flex flex-col">
-      {/* Webcam preview - top right corner */}
-      <div className="absolute top-4 right-4 z-10 w-40 sm:w-52 rounded-xl overflow-hidden shadow-lg ring-2 ring-white/20 bg-black">
-        <video
-          ref={videoRef}
-          autoPlay
-          muted
-          playsInline
-          className="w-full h-full object-cover scale-x-[-1]"
-        />
-        {isRecording && (
-          <div className="absolute top-2 left-2 flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-red-600/90">
-            <span className="h-1.5 w-1.5 rounded-full bg-white animate-pulse" />
-            <span className="text-[10px] font-semibold text-white">REC</span>
-          </div>
-        )}
-      </div>
-
-      {/* Main content */}
-      <div className="flex-1 flex flex-col items-center justify-center px-6 sm:px-16">
-        <p className="text-indigo-300 text-sm font-medium tracking-wide mb-4">
-          Question {currentIndex + 1} of {questions.length}
-        </p>
-
-        <h2 className="text-white text-2xl sm:text-4xl font-semibold text-center max-w-3xl leading-snug">
-          {questions[currentIndex]}
-        </h2>
-
-        <div
-          className={`mt-8 text-5xl font-bold tabular-nums ${
-            isUrgent ? "text-red-400" : "text-white"
-          }`}
-        >
-          {timeDisplay}
+    <div className="fixed inset-0 z-50 flex flex-col bg-[#0A0D16] text-[#E2E5F0]">
+      {/* Header bar */}
+      <div className="flex flex-shrink-0 items-center justify-between gap-3 border-b border-[#252A40] bg-[#0E1120] px-4 py-3 sm:px-5 sm:py-3.5">
+        <div className="flex min-w-0 items-center gap-2 text-xs font-semibold sm:text-sm">
+          <span className="relative flex h-2 w-2 flex-shrink-0">
+            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-red-500 opacity-75" />
+            <span className="relative inline-flex h-2 w-2 rounded-full bg-red-500" />
+          </span>
+          <span className="truncate">Live Interview</span>
+          <span className="hidden text-[#6B7299] sm:inline">&middot;</span>
+          <span className="hidden font-normal text-[#8E96BB] sm:inline">
+            Question {currentIndex + 1} of {questions.length}
+          </span>
         </div>
-        <p className="text-gray-400 text-xs mt-1">Time remaining</p>
+        <div className="flex flex-shrink-0 items-center gap-2 sm:gap-4">
+          <span className="hidden text-xs text-[#6B7299] sm:inline">
+            Time remaining
+          </span>
+          <span
+            className={`font-mono text-base font-bold tabular-nums sm:text-lg ${
+              isUrgent ? "text-red-400" : "text-[#FFB830]"
+            }`}
+          >
+            {timeDisplay}
+          </span>
+        </div>
+      </div>
 
-        {liveTranscript && (
-          <div className="mt-8 max-w-2xl w-full rounded-xl bg-white/5 border border-white/10 p-4">
-            <p className="text-xs text-gray-400 mb-1">Live transcript</p>
-            <p className="text-sm text-gray-200">{liveTranscript}</p>
+      {/* Body: stacked on mobile, two columns on desktop */}
+      <div className="flex flex-1 flex-col overflow-y-auto lg:flex-row lg:overflow-hidden">
+        {/* Left — question + transcript */}
+        <div className="flex min-h-0 flex-1 flex-col border-[#252A40] p-4 sm:p-7 lg:border-r">
+          <span className="mb-4 inline-flex w-fit items-center gap-1.5 rounded-md border border-[#7C6FFF]/25 bg-[#7C6FFF]/12 px-2.5 py-1 text-[11px] font-bold text-[#B0A8FF]">
+            ⚙ Interview Question — {currentIndex + 1} of {questions.length}
+          </span>
+
+          <h2 className="mb-5 max-w-2xl text-lg font-medium leading-relaxed text-[#E2E5F0] sm:text-xl">
+            {questions[currentIndex]}
+          </h2>
+
+          <div className="flex min-h-[160px] flex-1 flex-col overflow-hidden rounded-lg border border-[#7C6FFF]/60 bg-[#181C2C] p-4">
+            <span className="mb-2 block text-[10px] font-bold uppercase tracking-wider text-[#7C6FFF]">
+              🎙 Live Transcript
+            </span>
+            <div className="flex-1 overflow-y-auto text-sm leading-relaxed text-[#8E96BB]">
+              {liveTranscript ? (
+                <p>
+                  {liveTranscript}
+                  {isRecording && (
+                    <span className="ml-0.5 inline-block h-3 w-0.5 animate-pulse bg-[#7C6FFF] align-middle" />
+                  )}
+                </p>
+              ) : (
+                <p className="italic text-[#6B7299]">
+                  {isRecording
+                    ? "Listening…"
+                    : "Press “Record Answer” to begin speaking."}
+                </p>
+              )}
+            </div>
           </div>
-        )}
-      </div>
 
-      {/* Controls */}
-      <div className="pb-10 flex items-center justify-center gap-4">
-        <button
-          onClick={handleSkip}
-          className="px-6 py-3 rounded-lg bg-white/10 text-white font-semibold hover:bg-white/20 transition-all"
-        >
-          Skip / Pass
-        </button>
-        <button
-          onClick={handleRecordToggle}
-          className={`px-8 py-3 rounded-lg font-semibold shadow-lg transition-all ${
-            isRecording
-              ? "bg-red-600 hover:bg-red-700 text-white"
-              : "bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-700 hover:to-blue-700 text-white"
-          }`}
-        >
-          {isRecording ? "⏹ Stop Recording" : "🎤 Record Answer"}
-        </button>
-        <button
-          onClick={handleNext}
-          disabled={!hasRecorded}
-          className="px-6 py-3 rounded-lg bg-green-600 text-white font-semibold hover:bg-green-700 transition-all disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:bg-green-600"
-        >
-          {isLastQuestion ? "Finish" : "Next Question →"}
-        </button>
-      </div>
+          {/* Controls */}
+          <div className="mt-5 flex flex-wrap items-center gap-2.5">
+            <button
+              onClick={handleRecordToggle}
+              className={`inline-flex flex-1 items-center justify-center gap-2 rounded-lg px-5 py-2.5 text-sm font-semibold transition-all sm:flex-none ${
+                isRecording
+                  ? "border border-[#FF6B6B]/25 bg-[#FF6B6B]/12 text-[#FF8080]"
+                  : "bg-[#7C6FFF] text-white hover:bg-[#6B5FFF]"
+              }`}
+            >
+              {isRecording ? "⏺ Recording — Stop" : "🎤 Record Answer"}
+            </button>
+            <button
+              onClick={handleSkip}
+              className="rounded-lg border border-[#252A40] bg-transparent px-4 py-2.5 text-sm font-medium text-[#8E96BB] transition-all hover:bg-white/5"
+            >
+              ⏭ Skip
+            </button>
+            <button
+              onClick={handleNext}
+              disabled={!hasRecorded}
+              className="inline-flex w-full items-center justify-center gap-2 rounded-lg bg-[#00CFA8]/15 px-5 py-2.5 text-sm font-semibold text-[#00CFA8] transition-all hover:bg-[#00CFA8]/25 disabled:cursor-not-allowed disabled:opacity-30 sm:ml-auto sm:w-auto"
+            >
+              {isLastQuestion ? "✓ Finish Interview" : "▶ Submit & Next"}
+            </button>
+          </div>
+        </div>
 
-      {isLastQuestion && (
-        <p className="text-center text-gray-500 text-xs pb-4">
-          This is the last question
-        </p>
-      )}
+        {/* Right — webcam + signals */}
+        <div className="flex w-full flex-shrink-0 flex-col gap-4 border-t border-[#252A40] p-4 sm:p-5 lg:w-[360px] lg:border-t-0 xl:w-[420px]">
+          {/* Webcam */}
+          <div className="relative mx-auto w-full max-w-xs overflow-hidden rounded-lg border border-[#252A40] bg-[#181C2C] lg:max-w-none">
+            <video
+              ref={videoRef}
+              autoPlay
+              muted
+              playsInline
+              className="aspect-[4/3] w-full scale-x-[-1] object-cover"
+            />
+            {isRecording && (
+              <div className="absolute right-2 top-2 rounded-full bg-[#00CFA8]/90 px-2 py-0.5 text-[9px] font-extrabold text-[#002A1F]">
+                RECORDING
+              </div>
+            )}
+            <div className="absolute bottom-2 left-2 flex items-center gap-1.5 text-[9px] text-white/80">
+              <span
+                className={`h-1.5 w-1.5 rounded-full ${
+                  isRecording ? "animate-pulse bg-red-500" : "bg-[#6B7299]"
+                }`}
+              />
+              {isRecording ? "Webcam Active" : "Webcam Ready"}
+            </div>
+          </div>
+
+          {/* Signal tiles */}
+          <div className="grid grid-cols-3 gap-2">
+            <div className="rounded-lg bg-[#181C2C] px-2 py-4 text-center">
+              <div className="text-2xl font-bold text-[#00CFA8]">
+                {answeredCount}
+              </div>
+              <div className="mt-1 text-[10px] uppercase tracking-wide text-[#6B7299]">
+                Answered
+              </div>
+            </div>
+            <div className="rounded-lg bg-[#181C2C] px-2 py-4 text-center">
+              <div className="text-2xl font-bold text-[#FFB830]">
+                {questions.length - currentIndex}
+              </div>
+              <div className="mt-1 text-[10px] uppercase tracking-wide text-[#6B7299]">
+                Remaining
+              </div>
+            </div>
+            <div className="rounded-lg bg-[#181C2C] px-2 py-4 text-center">
+              <div className="text-2xl font-bold text-[#B0A8FF]">
+                {liveTranscript.trim()
+                  ? liveTranscript.trim().split(/\s+/).length
+                  : 0}
+              </div>
+              <div className="mt-1 text-[10px] uppercase tracking-wide text-[#6B7299]">
+                Words
+              </div>
+            </div>
+          </div>
+
+          {/* Question progress dots */}
+          <div>
+            <div className="mb-2 text-[10px] uppercase tracking-wide text-[#6B7299]">
+              Question Progress
+            </div>
+            <div className="flex flex-wrap gap-1.5">
+              {questions.map((_, i) => (
+                <span
+                  key={i}
+                  className={`h-2 w-6 rounded-sm ${
+                    i < currentIndex
+                      ? "bg-[#00CFA8]"
+                      : i === currentIndex
+                        ? "bg-[#7C6FFF]"
+                        : "bg-[#181C2C]"
+                  }`}
+                />
+              ))}
+            </div>
+          </div>
+
+          {isLastQuestion && (
+            <p className="mt-auto text-center text-[10px] text-[#6B7299]">
+              This is the last question
+            </p>
+          )}
+        </div>
+      </div>
     </div>
   );
 }

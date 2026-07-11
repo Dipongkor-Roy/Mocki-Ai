@@ -20,7 +20,8 @@
 
 # production
 /build
-
+/references
+/public/references
 # misc
 .DS_Store
 *.pem

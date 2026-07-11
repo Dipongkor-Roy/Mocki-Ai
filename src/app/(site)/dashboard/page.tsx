@@ -12,12 +12,7 @@ export default async function DashboardPage() {
 
   let dbUser = await prisma.user.findUnique({
     where: { clerkId: user.id },
-    include: {
-      interviews: {
-        orderBy: { createdAt: "desc" },
-        include: { report: true },
-      },
-    },
+    select: { id: true, cvData: true },
   });
 
   if (!dbUser) {
@@ -28,7 +23,7 @@ export default async function DashboardPage() {
         name: user.firstName ?? user.username ?? null,
         image: user.imageUrl ?? null,
       },
-      include: { interviews: { include: { report: true } } },
+      select: { id: true, cvData: true },
     });
   }
 
@@ -39,25 +34,55 @@ export default async function DashboardPage() {
 
   const email = user.emailAddresses[0]?.emailAddress ?? "";
   const cvData = (dbUser.cvData as CVData | null) ?? null;
-  const interviews = dbUser.interviews;
-  const totalInterviews = interviews.length;
-  const completedCount = interviews.filter(
-    (i: (typeof interviews)[number]) => i.completed,
-  ).length;
-  const scoredInterviews = interviews.filter(
-    (i: (typeof interviews)[number]) => i.report,
-  );
+
+  const [
+    totalInterviews,
+    completedCount,
+    reportScores,
+    reportedCount,
+    recentInterviews,
+    recentReported,
+  ] = await Promise.all([
+    prisma.interview.count({ where: { userId: dbUser.id } }),
+    prisma.interview.count({ where: { userId: dbUser.id, completed: true } }),
+    prisma.report.findMany({
+      where: { interview: { userId: dbUser.id } },
+      select: { overallScore: true },
+    }),
+    prisma.report.count({ where: { interview: { userId: dbUser.id } } }),
+    prisma.interview.findMany({
+      where: { userId: dbUser.id },
+      orderBy: { createdAt: "desc" },
+      take: 5,
+      select: {
+        id: true,
+        industry: true,
+        level: true,
+        completed: true,
+        createdAt: true,
+      },
+    }),
+    prisma.interview.findMany({
+      where: { userId: dbUser.id, report: { isNot: null } },
+      orderBy: { createdAt: "desc" },
+      take: 5,
+      select: {
+        id: true,
+        industry: true,
+        level: true,
+        createdAt: true,
+        report: { select: { overallScore: true } },
+      },
+    }),
+  ]);
+
   const avgScore =
-    scoredInterviews.length > 0
+    reportScores.length > 0
       ? Math.round(
-          scoredInterviews.reduce(
-            (sum: number, i: (typeof interviews)[number]) =>
-              sum + (i.report?.overallScore ?? 0),
-            0,
-          ) / scoredInterviews.length,
+          reportScores.reduce((sum, r) => sum + r.overallScore, 0) /
+            reportScores.length,
         )
       : null;
-  const recentInterviews = interviews.slice(0, 5);
 
   return (
     <div className="relative flex-1 overflow-hidden px-4 py-8 sm:px-6 lg:px-8">
@@ -130,7 +155,7 @@ export default async function DashboardPage() {
                   AI-powered feedback on your interviews
                 </p>
               </div>
-              {scoredInterviews.length > 0 && (
+              {reportedCount > 0 && (
                 <Link
                   href="/dashboard/history"
                   className="text-sm font-medium text-indigo-600 hover:text-indigo-700"
@@ -140,14 +165,14 @@ export default async function DashboardPage() {
               )}
             </div>
 
-            {scoredInterviews.length === 0 ? (
+            {reportedCount === 0 ? (
               <EmptyState
                 title="No reports generated yet"
                 description="Complete an interview to generate your detailed performance analysis and recommendations."
               />
             ) : (
               <div className="space-y-3">
-                {scoredInterviews.slice(0, 5).map((interview) => (
+                {recentReported.map((interview) => (
                   <Link
                     key={interview.id}
                     href={`/dashboard/history/${interview.id}`}

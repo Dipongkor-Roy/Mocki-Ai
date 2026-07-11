@@ -26,9 +26,7 @@ export default function DashboardClient({
   return (
     <div
       className={
-        isReportStage && cvData
-          ? ""
-          : "grid grid-cols-1 lg:grid-cols-3 gap-6"
+        isReportStage && cvData ? "" : "grid grid-cols-1 lg:grid-cols-3 gap-6"
       }
     >
       {/* Main Content - CV */}
@@ -57,7 +55,7 @@ export default function DashboardClient({
 
 function RecentActivity({ interviews }: { interviews: InterviewSummary[] }) {
   return (
-    <section className="lg:h-full rounded-2xl bg-white p-6 shadow-sm ring-1 ring-gray-100 flex flex-col">
+    <section className="lg:h-full min-h-[500px] lg:min-h-[550px] rounded-2xl bg-white p-6 shadow-sm ring-1 ring-gray-100 flex flex-col">
       <h2 className="mb-4 text-base font-semibold text-gray-900">
         Recent Activity
       </h2>

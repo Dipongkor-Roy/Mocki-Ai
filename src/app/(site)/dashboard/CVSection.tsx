@@ -127,7 +127,9 @@ export default function CVSection({
         <div className="mb-6 flex items-center justify-between border-b border-gray-100 pb-4">
           <div>
             <h2 className="text-lg font-semibold text-gray-900">Your CV</h2>
-            <p className="text-xs text-gray-500 mt-1">Profile information from your resume</p>
+            <p className="text-xs text-gray-500 mt-1">
+              Profile information from your resume
+            </p>
           </div>
           <div className="flex gap-2">
             <button
@@ -155,11 +157,13 @@ export default function CVSection({
             )}
             <InfoRow
               label="Experience"
-              value={`${cvData.experienceYears} year${cvData.experienceYears !== 1 ? 's' : ''}`}
+              value={`${cvData.experienceYears} year${cvData.experienceYears !== 1 ? "s" : ""}`}
             />
             <InfoRow label="Education" value={cvData.education} />
             {cvData.email && <InfoRow label="Email" value={cvData.email} />}
-            {cvData.industry && <InfoRow label="Industry" value={cvData.industry} />}
+            {cvData.industry && (
+              <InfoRow label="Industry" value={cvData.industry} />
+            )}
           </div>
 
           {/* Skills Section */}
@@ -198,10 +202,12 @@ export default function CVSection({
   }
 
   return (
-    <div className="rounded-2xl bg-white p-6 shadow-sm ring-1 ring-gray-100 hover:ring-indigo-200 transition-all">
+    <div className="lg:h-full flex flex-col rounded-2xl bg-white p-6 shadow-sm ring-1 ring-gray-100 hover:ring-indigo-200 transition-all">
       <div className="mb-6">
         <h2 className="text-lg font-semibold text-gray-900">Upload Your CV</h2>
-        <p className="text-sm text-gray-500 mt-1">We&apos;ll analyze your resume to tailor interview questions</p>
+        <p className="text-sm text-gray-500 mt-1">
+          We&apos;ll analyze your resume to tailor interview questions
+        </p>
       </div>
       <div
         role="button"
@@ -214,7 +220,7 @@ export default function CVSection({
           const file = e.dataTransfer.files[0];
           if (file) handleUpload(file);
         }}
-        className="flex cursor-pointer flex-col items-center justify-center rounded-2xl border-2 border-dashed border-gray-200 py-16 px-4 transition-all hover:border-indigo-400 hover:bg-indigo-50/50 bg-gradient-to-br from-white to-gray-50"
+        className="flex flex-1 min-h-[280px] lg:min-h-[380px] cursor-pointer flex-col items-center justify-center rounded-2xl border-2 border-dashed border-gray-200 py-16 px-4 transition-all hover:border-indigo-400 hover:bg-indigo-50/50 bg-gradient-to-br from-white to-gray-50"
       >
         {uploading ? (
           <>
@@ -230,8 +236,12 @@ export default function CVSection({
             <p className="text-sm font-semibold text-gray-800">
               Drop your CV here or click to browse
             </p>
-            <p className="mt-2 text-xs text-gray-500">PDF or Word document · Max 5MB</p>
-            <div className="mt-4 text-xs text-gray-400">We support: .pdf, .doc, .docx</div>
+            <p className="mt-2 text-xs text-gray-500">
+              PDF or Word document · Max 5MB
+            </p>
+            <div className="mt-4 text-xs text-gray-400">
+              We support: .pdf, .doc, .docx
+            </div>
           </>
         )}
       </div>
@@ -243,7 +253,9 @@ export default function CVSection({
 function InfoRow({ label, value }: { label: string; value: string }) {
   return (
     <div className="p-3 rounded-lg bg-gray-50 border border-gray-100">
-      <p className="text-xs uppercase tracking-wide font-semibold text-gray-500">{label}</p>
+      <p className="text-xs uppercase tracking-wide font-semibold text-gray-500">
+        {label}
+      </p>
       <p className="text-sm font-semibold text-gray-900 mt-1.5">{value}</p>
     </div>
   );
@@ -270,8 +282,8 @@ function RemoveCVModal({
         </div>
         <h3 className="text-lg font-bold text-gray-900">Remove your CV?</h3>
         <p className="mt-2 text-sm text-gray-600 leading-relaxed">
-          This will permanently delete your extracted CV data. You&apos;ll
-          need to upload your CV again to start a personalized interview.
+          This will permanently delete your extracted CV data. You&apos;ll need
+          to upload your CV again to start a personalized interview.
         </p>
 
         <div className="mt-6 flex gap-3">

@@ -222,8 +222,8 @@ export default function Footer({
               <p
                 className={`mb-5 ${layout === "light" ? "text-gray-700" : "text-gray-400"}`}
               >
-                Occasional emails with practice prompts and ways to sound sharper
-                in your next interview. No spam.
+                Occasional emails with practice prompts and ways to sound
+                sharper in your next interview. No spam.
               </p>
               <div className="flex flex-col sm:flex-row gap-3 mt-2 mb-4">
                 <input
@@ -713,8 +713,8 @@ export default function Footer({
         ) : (
           <div className="text-center lg:py-7 py-4">
             <p className="text-gray-400 text-base font-medium py-2">
-              {brandName} © {new Date().getFullYear()} — A free interview
-              practice project. Built with Next.js &amp; AI.
+              {brandName} © {new Date().getFullYear()} — Try A Free Interview
+              Practice with &amp; AI.
             </p>
           </div>
         )}

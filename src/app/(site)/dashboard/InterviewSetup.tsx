@@ -128,6 +128,19 @@ export default function InterviewSetup({
   const requestPermissionAndGenerate = async () => {
     setPermissionStatus("requesting");
     setPermissionError("");
+
+    // getUserMedia only works on secure origins (https or localhost).
+    if (
+      typeof navigator === "undefined" ||
+      !navigator.mediaDevices?.getUserMedia
+    ) {
+      setPermissionStatus("denied");
+      setPermissionError(
+        "Your browser can't access the camera/mic here. This usually happens on an insecure connection — open the site over https:// or on localhost and try again."
+      );
+      return;
+    }
+
     try {
       const stream = await navigator.mediaDevices.getUserMedia({
         video: true,
@@ -139,11 +152,23 @@ export default function InterviewSetup({
       await generateQuestions();
     } catch (error) {
       setPermissionStatus("denied");
-      setPermissionError(
-        error instanceof Error
-          ? error.message
-          : "Could not access webcam/microphone. Please allow permission and try again."
-      );
+
+      const name = error instanceof DOMException ? error.name : "";
+      let message: string;
+      if (name === "NotAllowedError" || name === "SecurityError") {
+        message =
+          "Camera/microphone access was blocked. Click the camera icon in your browser's address bar, allow access, then try again.";
+      } else if (name === "NotFoundError" || name === "OverconstrainedError") {
+        message =
+          "No camera or microphone was found. Please connect one and try again.";
+      } else if (name === "NotReadableError") {
+        message =
+          "Your camera/microphone is already in use by another app. Close it (Zoom, Meet, etc.) and try again.";
+      } else {
+        message =
+          "Could not access webcam/microphone. Please allow permission and try again.";
+      }
+      setPermissionError(message);
     }
   };
 

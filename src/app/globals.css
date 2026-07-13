@@ -781,3 +781,17 @@ body.dark {
     transition: all 0.4s ease !important;
   }
 }
+
+/* Local-only: force-hide Clerk's "Secured by Clerk" branding footer.
+   Free-plan branding isn't removable via the appearance prop, so this
+   targets Clerk's internal class names directly. Dev/local use only. */
+.cl-internal-b3fm6y,
+.cl-footer,
+.cl-userProfile-root .cl-footer,
+.cl-userButtonPopoverFooter,
+.cl-modalContent .cl-footer,
+[data-localization-key="footer.poweredBy"],
+[class*="cl-footer__poweredBy"],
+a[href*="clerk.com?utm_source"] {
+  display: none !important;
+}

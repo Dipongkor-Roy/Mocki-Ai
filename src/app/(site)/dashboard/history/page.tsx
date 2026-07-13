@@ -36,7 +36,10 @@ export default async function HistoryPage() {
               Interview History
             </h1>
             <p className="text-sm text-gray-500 mt-1">
-              All your past practice interviews and reports · {interviews.length} total
+              All your past practice interviews and reports. Total :{" "}
+              <span className="text-md font-medium text-indigo-600 hover:text-indigo-700">
+                {interviews.length}
+              </span>{" "}
             </p>
           </div>
           <Link

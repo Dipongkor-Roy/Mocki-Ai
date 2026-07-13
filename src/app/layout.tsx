@@ -28,7 +28,14 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <ClerkProvider>
+    <ClerkProvider
+      appearance={{
+        elements: {
+          footer: { display: "none" },
+          userButtonPopoverFooter: { display: "none" },
+        },
+      }}
+    >
       <html lang="en" className={`${sora.variable} ${dmSans.variable}`}>
         <body>
           <AOSWrapper />

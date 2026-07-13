@@ -18,7 +18,14 @@ export default function RootLayout({
   return (
     <div className="font-dm-sans">
       {!isDashboard && <Header />}
-      <ClerkProvider>
+      <ClerkProvider
+        appearance={{
+          elements: {
+            footer: { display: "none" },
+            userButtonPopoverFooter: { display: "none" },
+          },
+        }}
+      >
         <main className="flex-1">{children}</main>
       </ClerkProvider>
 

@@ -46,6 +46,11 @@ export default function HistoryTable({
 }) {
   const router = useRouter();
 
+  // Always show the most recent interview first, regardless of caller order.
+  const sortedInterviews = [...interviews].sort(
+    (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
+  );
+
   if (interviews.length === 0) {
     return (
       <div className="flex min-h-[420px] flex-col items-center justify-center rounded-2xl bg-white p-12 shadow-sm ring-1 ring-gray-100 text-center">
@@ -63,7 +68,7 @@ export default function HistoryTable({
       <table className="w-full text-sm min-w-[720px]">
         <thead>
           <tr className="border-b border-gray-100 text-left">
-            <th className="pb-3 pr-4 text-[11px] font-semibold uppercase tracking-wide text-gray-400">
+            <th className="pb-3 pl-4 pr-4 text-[11px] font-semibold uppercase tracking-wide text-gray-400">
               Interview
             </th>
             <th className="pb-3 pr-4 text-[11px] font-semibold uppercase tracking-wide text-gray-400">
@@ -76,15 +81,15 @@ export default function HistoryTable({
               Score
             </th>
             <th className="pb-3 pr-4 text-[11px] font-semibold uppercase tracking-wide text-gray-400">
-              Readiness
+              Suggestion
             </th>
-            <th className="pb-3 pr-4 text-[11px] font-semibold uppercase tracking-wide text-gray-400 text-right">
+            <th className="pb-3 pl-4 pr-4 text-[11px] font-semibold uppercase tracking-wide text-gray-400 text-right">
               Action
             </th>
           </tr>
         </thead>
         <tbody>
-          {interviews.map((interview) => {
+          {sortedInterviews.map((interview) => {
             const badge =
               interview.overallScore !== null
                 ? decisionBadge(interview.overallScore)
@@ -103,13 +108,13 @@ export default function HistoryTable({
                     : "hover:bg-gray-50/60"
                 }`}
               >
-                <td className="py-3.5 pr-4">
+                <td className="py-4 pl-4 pr-4">
                   <p className="font-semibold text-gray-900">
                     {interview.industry}
                   </p>
                   <p className="text-xs text-gray-400">{interview.level}</p>
                 </td>
-                <td className="py-3.5 pr-4 text-gray-600">
+                <td className="py-4 pr-4 text-gray-600">
                   {new Date(interview.createdAt).toLocaleDateString("en-US", {
                     month: "short",
                     day: "numeric",
@@ -122,7 +127,7 @@ export default function HistoryTable({
                     })}
                   </p>
                 </td>
-                <td className="py-3.5 pr-4">
+                <td className="py-4 pr-4">
                   <span
                     className={`inline-block text-xs font-medium px-2 py-0.5 rounded-full ${
                       interview.completed
@@ -133,7 +138,7 @@ export default function HistoryTable({
                     {interview.completed ? "Completed" : "In Progress"}
                   </span>
                 </td>
-                <td className="py-3.5 pr-4">
+                <td className="py-4 pr-4">
                   {interview.overallScore !== null ? (
                     <span
                       className={`font-bold ${scoreColor(interview.overallScore)}`}
@@ -147,7 +152,7 @@ export default function HistoryTable({
                     <span className="text-gray-300">—</span>
                   )}
                 </td>
-                <td className="py-3.5 pr-4">
+                <td className="py-4 pr-4">
                   {badge ? (
                     <span
                       className={`inline-block rounded-full px-2.5 py-0.5 text-[11px] font-bold ${badge.className}`}
@@ -158,7 +163,7 @@ export default function HistoryTable({
                     <span className="text-gray-300">—</span>
                   )}
                 </td>
-                <td className="py-3.5 text-right">
+                <td className="py-4 pl-2 pr-3 text-right">
                   {interview.overallScore !== null ? (
                     <Link
                       href={`${reportHrefBase}/${interview.id}`}

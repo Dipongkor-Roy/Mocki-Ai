@@ -46,11 +46,11 @@ const Brands = ({ layout = "grid" }: BrandsProps) => {
         </>
       ) : (
         // ---------------- FLEX WRAP LAYOUT ----------------
-        <div className="flex flex-wrap justify-center">
+        <div className="flex flex-wrap justify-center gap-x-10 gap-y-4">
           {displayedBrands.map((brand) => (
             <div
               key={brand.id}
-              className="w-1/2 md:w-1/3 lg:w-1/6 text-center mb-3 mt-3"
+              className="text-center"
               data-aos="zoom-in"
               data-aos-duration="400"
               data-aos-delay={brand.delay}

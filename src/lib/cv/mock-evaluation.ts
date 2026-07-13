@@ -7,6 +7,8 @@ export const mockInterviewEvaluation: InterviewEvaluation = {
   technicalScore: 74,
   communicationScore: 82,
   confidenceScore: 76,
+  faceScore: 40,
+  voiceScore: 36,
   strengths: [
     "Clear and structured explanations of past project work",
     "Good grasp of core technical fundamentals",
@@ -54,9 +56,9 @@ export const mockInterviewEvaluation: InterviewEvaluation = {
     },
   ],
   confidenceActivities: [
-    { activity: "Maintained steady eye contact", points: 18 },
-    { activity: "Used filler words occasionally", points: -5 },
-    { activity: "Spoke with a calm, even pace", points: 15 },
-    { activity: "Paused briefly before answering", points: 8 },
+    { activity: "Maintained steady eye contact", points: 18, channel: "face" },
+    { activity: "Used filler words occasionally", points: -5, channel: "voice" },
+    { activity: "Spoke with a calm, even pace", points: 15, channel: "voice" },
+    { activity: "Paused briefly before answering", points: 8, channel: "face" },
   ],
 };

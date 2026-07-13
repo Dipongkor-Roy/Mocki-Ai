@@ -19,6 +19,7 @@ export interface AnswerEvaluation {
 export interface ConfidenceActivity {
   activity: string;
   points: number;
+  channel: "face" | "voice";
 }
 
 export interface InterviewEvaluation {
@@ -26,6 +27,8 @@ export interface InterviewEvaluation {
   technicalScore: number;
   communicationScore: number;
   confidenceScore: number;
+  faceScore: number;
+  voiceScore: number;
   strengths: string[];
   improvements: string[];
   summary: string;
@@ -34,17 +37,43 @@ export interface InterviewEvaluation {
   confidenceActivities: ConfidenceActivity[];
 }
 
-const CONFIDENCE_ACTIVITY_POOL: { activity: string; points: number }[] = [
-  { activity: "Neutral Face", points: 20 },
-  { activity: "Smile", points: 20 },
-  { activity: "Good Voice Energy", points: 20 },
-  { activity: "Clear Speaking", points: 20 },
-  { activity: "Steady Eye Contact", points: 15 },
-  { activity: "Too Many Pauses", points: -10 },
-  { activity: "Fear Emotion", points: -10 },
-  { activity: "Filler Words (um, uh)", points: -10 },
-  { activity: "Low Voice Energy", points: -10 },
+// Each confidence signal is attributed to either the "face" channel
+// (expression/eye-contact style cues) or the "voice" channel (speech
+// delivery cues), so Confidence Score can be shown as Face + Voice.
+const CONFIDENCE_ACTIVITY_POOL: ConfidenceActivity[] = [
+  { activity: "Neutral Face", points: 20, channel: "face" },
+  { activity: "Smile", points: 20, channel: "face" },
+  { activity: "Good Voice Energy", points: 20, channel: "voice" },
+  { activity: "Clear Speaking", points: 20, channel: "voice" },
+  { activity: "Steady Eye Contact", points: 15, channel: "face" },
+  { activity: "Too Many Pauses", points: -10, channel: "voice" },
+  { activity: "Fear Emotion", points: -10, channel: "face" },
+  { activity: "Filler Words (um, uh)", points: -10, channel: "voice" },
+  { activity: "Low Voice Energy", points: -10, channel: "voice" },
 ];
+
+const MAX_CHANNEL_POINTS = 40; // two positive signals per channel, 20pts each
+
+function clampScore(value: number): number {
+  return Math.max(0, Math.min(100, Math.round(value)));
+}
+
+// Derives a 0-100 score per channel from that channel's activities, scaled
+// so it contributes half of the overall confidence score (Face + Voice).
+export function computeChannelScore(
+  activities: ConfidenceActivity[],
+  channel: "face" | "voice",
+  confidenceScore: number,
+): number {
+  const channelActivities = activities.filter((a) => a.channel === channel);
+  if (channelActivities.length === 0) {
+    // No signals detected for this channel — split the overall score evenly.
+    return clampScore(confidenceScore / 2);
+  }
+  const points = channelActivities.reduce((sum, a) => sum + a.points, 0);
+  const base = confidenceScore / 2;
+  return clampScore(base + (points / MAX_CHANNEL_POINTS) * 20);
+}
 
 function buildConfidenceActivities(
   answers: AnswerInput[],
@@ -183,16 +212,33 @@ Rules:
     };
   });
 
+  const confidenceScore = parsed.confidenceScore ?? 0;
   const confidenceActivities = buildConfidenceActivities(
     answers,
-    parsed.confidenceScore ?? 0,
+    confidenceScore,
+  );
+
+  // Confidence Score = Face Score + Voice Score, each derived from the
+  // face/voice-tagged activities above and normalized to sum back to
+  // confidenceScore (each channel contributes up to half).
+  const faceScore = computeChannelScore(
+    confidenceActivities,
+    "face",
+    confidenceScore,
+  );
+  const voiceScore = computeChannelScore(
+    confidenceActivities,
+    "voice",
+    confidenceScore,
   );
 
   return {
     overallScore: parsed.overallScore ?? 0,
     technicalScore: parsed.technicalScore ?? 0,
     communicationScore: parsed.communicationScore ?? 0,
-    confidenceScore: parsed.confidenceScore ?? 0,
+    confidenceScore,
+    faceScore,
+    voiceScore,
     strengths: parsed.strengths ?? [],
     improvements: parsed.improvements ?? [],
     summary: parsed.summary ?? "",

@@ -3,10 +3,11 @@ import { redirect, notFound } from "next/navigation";
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import InterviewReport from "../../InterviewReport";
-import type {
-  InterviewEvaluation,
-  AnswerEvaluation,
-  ConfidenceActivity,
+import {
+  computeChannelScore,
+  type InterviewEvaluation,
+  type AnswerEvaluation,
+  type ConfidenceActivity,
 } from "@/lib/cv/evaluate-interview";
 
 interface AnswerRecord {
@@ -66,11 +67,15 @@ export default async function HistoryDetailPage({
   const confidenceActivities =
     (interview.report.cameraFeedback as unknown as ConfidenceActivity[]) ?? [];
 
+  const confidenceScore = interview.report.confidenceScore;
+
   const evaluation: InterviewEvaluation = {
     overallScore: interview.report.overallScore,
     technicalScore: interview.report.technicalScore,
     communicationScore: interview.report.communicationScore,
-    confidenceScore: interview.report.confidenceScore,
+    confidenceScore,
+    faceScore: computeChannelScore(confidenceActivities, "face", confidenceScore),
+    voiceScore: computeChannelScore(confidenceActivities, "voice", confidenceScore),
     strengths: interview.report.strengths,
     improvements: interview.report.improvements,
     summary: interview.report.summary,
@@ -103,6 +108,9 @@ export default async function HistoryDetailPage({
           evaluation={evaluation}
           industry={interview.industry}
           level={interview.level}
+          candidateName={
+            user.firstName || user.username || user.emailAddresses[0]?.emailAddress
+          }
         />
       </div>
     </div>

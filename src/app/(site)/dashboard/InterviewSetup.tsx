@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { toast } from "react-hot-toast";
 import type { CVData } from "@/lib/cv/extract-with-gemini";
 import InterviewSession, { type InterviewAnswer } from "./InterviewSession";
 import InterviewReport from "./InterviewReport";
@@ -234,7 +235,17 @@ export default function InterviewSetup({
           duration,
           evaluation: data.evaluation,
         }),
-      }).catch((err) => console.error("Failed to save interview:", err));
+      })
+        .then((saveRes) => {
+          if (!saveRes.ok) throw new Error("Save failed");
+          toast.success("Report saved! You can find it anytime in History.");
+        })
+        .catch((err) => {
+          console.error("Failed to save interview:", err);
+          toast.error(
+            "Your report is ready, but saving it to History failed. You can still view it below."
+          );
+        });
     } catch (error) {
       setReportError(
         error instanceof Error

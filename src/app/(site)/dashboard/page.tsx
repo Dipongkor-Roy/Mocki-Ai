@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import DashboardClient from "./DashboardClient";
+import LoginToast from "./LoginToast";
 import type { CVData } from "@/lib/cv/extract-with-gemini";
 
 export default async function DashboardPage() {
@@ -86,6 +87,7 @@ export default async function DashboardPage() {
 
   return (
     <div className="relative flex-1 overflow-hidden px-4 py-4 sm:px-6 lg:px-8">
+      <LoginToast />
       <div className="mx-auto max-w-7xl space-y-6">
         {/* Header Section */}
         <div className="flex flex-col items-start justify-between gap-4 lg:flex-row lg:items-center">

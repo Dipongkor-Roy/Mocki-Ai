@@ -2,7 +2,7 @@
 
 import { useRef, useState } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useUser, UserButton } from "@clerk/nextjs";
 import {
   LayoutDashboard,
@@ -31,6 +31,7 @@ export default function DashboardSidebar({
   onCollapsedChange,
 }: DashboardSidebarProps) {
   const pathname = usePathname();
+  const router = useRouter();
   const { user } = useUser();
   const [mobileOpen, setMobileOpen] = useState(false);
   const userBtnWrapRef = useRef<HTMLDivElement>(null);
@@ -192,10 +193,10 @@ export default function DashboardSidebar({
               }}
             >
               <UserButton.MenuItems>
-                <UserButton.Link
+                <UserButton.Action
                   label="Dashboard"
                   labelIcon={<LayoutDashboard size={16} />}
-                  href="/dashboard"
+                  onClick={() => router.push("/dashboard")}
                 />
               </UserButton.MenuItems>
             </UserButton>

@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useAuth, UserButton } from "@clerk/nextjs";
 import { Menu, X } from "react-feather";
 import MenuBlock from "./MenuBlock";
@@ -35,6 +36,7 @@ const Header = ({
   const [mobileOpen, setMobileOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const { isSignedIn, isLoaded } = useAuth();
+  const router = useRouter();
 
   const getDarkLogo = (src: string) => {
     if (src.endsWith(".png")) return src.replace(".png", "-white.png");
@@ -136,10 +138,10 @@ const Header = ({
                       }}
                     >
                       <UserButton.MenuItems>
-                        <UserButton.Link
+                        <UserButton.Action
                           label="Dashboard"
                           labelIcon={<LayoutDashboard size={16} />}
-                          href="/dashboard"
+                          onClick={() => router.push("/dashboard")}
                         />
                       </UserButton.MenuItems>
                     </UserButton>

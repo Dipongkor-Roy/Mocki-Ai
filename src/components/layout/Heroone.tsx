@@ -98,7 +98,10 @@ export default function HeroOne() {
                   src="https://my.spline.design/interactiveaiwebsite-wtWdv2EaO3yGXzCOYmueDAms/"
                   width="100%"
                   height="100%"
-                  style={{ backgroundColor: "transparent", pointerEvents: "none" }}
+                  style={{
+                    backgroundColor: "transparent",
+                    pointerEvents: "none",
+                  }}
                 ></iframe>
               </div>
               {/* Floating Icon */}
@@ -116,7 +119,7 @@ export default function HeroOne() {
               >
                 <div className="flex -space-x-4">
                   <Image
-                    src="https://exsit-next.vercel.app/_next/image?url=%2Fimages%2Favatars%2Favater-12.webp&w=48&q=75"
+                    src="https://mocki-ai.vercel.app/_next/image?url=%2Fimages%2Favatars%2Favater-12.webp&w=48&q=75"
                     width={48}
                     height={48}
                     alt="member-avatar"
@@ -124,7 +127,7 @@ export default function HeroOne() {
                     loading="lazy"
                   />
                   <Image
-                    src="https://exsit-next.vercel.app/_next/image?url=%2Fimages%2Favatars%2Favater-11.webp&w=48&q=75"
+                    src="https://mocki-ai.vercel.app/_next/image?url=%2Fimages%2Favatars%2Favater-11.webp&w=48&q=75"
                     width={48}
                     height={48}
                     alt="member-avatar"
@@ -132,7 +135,7 @@ export default function HeroOne() {
                     loading="lazy"
                   />
                   <Image
-                    src="https://exsit-next.vercel.app/_next/image?url=%2Fimages%2Favatars%2Favater-13.webp&w=48&q=75"
+                    src="https://mocki-ai.vercel.app/_next/image?url=%2Fimages%2Favatars%2Favater-13.webp&w=48&q=75"
                     width={48}
                     height={48}
                     alt="member-avatar"

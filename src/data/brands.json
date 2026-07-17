@@ -1,7 +1,7 @@
 [
   {
     "id": 1,
-    "light": "https://exsit-next.vercel.app/_next/image?url=%2Fimages%2Fbrands%2Fb-1.png&w=256&q=75",
+    "light": "https://mocki-ai.vercel.app/_next/image?url=%2Fimages%2Fbrands%2Fb-1.png&w=256&q=75",
     "dark": "/images/brand-w.svg",
     "alt": "brand 1",
     "width": 110,
@@ -10,7 +10,7 @@
   },
   {
     "id": 2,
-    "light": "https://exsit-next.vercel.app/_next/image?url=%2Fimages%2Fbrands%2Fb-2.png&w=256&q=75",
+    "light": "https://mocki-ai.vercel.app/_next/image?url=%2Fimages%2Fbrands%2Fb-2.png&w=256&q=75",
     "dark": "/images/brand-w.svg",
     "alt": "brand 2",
     "width": 110,
@@ -19,7 +19,7 @@
   },
   {
     "id": 3,
-    "light": "https://exsit-next.vercel.app/_next/image?url=%2Fimages%2Fbrands%2Fb-3.png&w=256&q=75",
+    "light": "https://mocki-ai.vercel.app/_next/image?url=%2Fimages%2Fbrands%2Fb-3.png&w=256&q=75",
     "dark": "/images/brand-w.svg",
     "alt": "brand 3",
     "width": 110,
@@ -28,7 +28,7 @@
   },
   {
     "id": 4,
-    "light": "https://exsit-next.vercel.app/_next/image?url=%2Fimages%2Fbrands%2Fb-4.png&w=128&q=75",
+    "light": "https://mocki-ai.vercel.app/_next/image?url=%2Fimages%2Fbrands%2Fb-4.png&w=128&q=75",
     "dark": "/images/brand-w.svg",
     "alt": "brand 4",
     "width": 110,
@@ -37,7 +37,7 @@
   },
   {
     "id": 5,
-    "light": "https://exsit-next.vercel.app/_next/image?url=%2Fimages%2Fbrands%2Fb-5.png&w=128&q=75",
+    "light": "https://mocki-ai.vercel.app/_next/image?url=%2Fimages%2Fbrands%2Fb-5.png&w=128&q=75",
     "dark": "/images/brand-w.svg",
     "alt": "brand 5",
     "width": 110,
@@ -46,7 +46,7 @@
   },
   {
     "id": 6,
-    "light": "https://exsit-next.vercel.app/_next/image?url=%2Fimages%2Fbrands%2Fb-6.png&w=256&q=75",
+    "light": "https://mocki-ai.vercel.app/_next/image?url=%2Fimages%2Fbrands%2Fb-6.png&w=256&q=75",
     "dark": "/images/brand-w.svg",
     "alt": "brand 6",
     "width": 110,
@@ -55,7 +55,7 @@
   },
   {
     "id": 7,
-    "light": "https://exsit-next.vercel.app/_next/image?url=%2Fimages%2Fbrands%2Fb-7.png&w=256&q=75",
+    "light": "https://mocki-ai.vercel.app/_next/image?url=%2Fimages%2Fbrands%2Fb-7.png&w=256&q=75",
     "dark": "/images/brand-w.svg",
     "alt": "brand 7",
     "width": 110,
@@ -64,7 +64,7 @@
   },
   {
     "id": 8,
-    "light": "https://exsit-next.vercel.app/_next/image?url=%2Fimages%2Fbrands%2Fb-8.png&w=128&q=75",
+    "light": "https://mocki-ai.vercel.app/_next/image?url=%2Fimages%2Fbrands%2Fb-8.png&w=128&q=75",
     "dark": "/images/brand-w.svg",
     "alt": "brand 8",
     "width": 110,
@@ -73,7 +73,7 @@
   },
   {
     "id": 9,
-    "light": "https://exsit-next.vercel.app/_next/image?url=%2Fimages%2Fbrands%2Fb-9.png&w=128&q=75",
+    "light": "https://mocki-ai.vercel.app/_next/image?url=%2Fimages%2Fbrands%2Fb-9.png&w=128&q=75",
     "dark": "/images/brand-w.svg",
     "alt": "brand 9",
     "width": 110,

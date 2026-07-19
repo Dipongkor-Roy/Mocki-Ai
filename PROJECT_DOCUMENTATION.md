@@ -1,340 +1,182 @@
 # Mocki AI — Project Documentation
 
-> A free, voice-based AI mock interview practice platform. Speak your answers out loud to real interview questions, get AI-generated feedback, and track your progress over time.
+> A free, voice-based AI mock interview practice platform. Users speak their answers out loud to real interview questions, get AI-generated feedback, and track their progress over time.
 
-This document is written for **future-you** (or anyone else) coming back to this codebase after a break — to relearn the architecture fast and know where to make changes safely.
+This document explains what the product is, how it works from a user's perspective, and how the system is built — written to be understandable without a technical background.
 
 ---
 
 ## 1. What This Project Is
 
-Mocki AI lets a user:
+Mocki AI helps someone practice for a real job interview by simulating one. Instead of reading generic tips, the user:
 
-1. Upload their CV (PDF/DOCX) → AI extracts structured profile data (name, skills, experience, education, industry).
-2. Pick an industry/role and experience level for the mock interview.
-3. Get 9 AI-generated interview questions tailored to their profile.
-4. Answer each question **out loud** via webcam + mic (not by typing).
-5. Get an AI-generated performance report: overall score, technical/communication/confidence sub-scores, strengths, improvements, per-question feedback.
-6. See every past interview + report saved in **History**, and download any report as a PDF.
+1. Uploads their CV.
+2. Chooses the type of role and experience level they're interviewing for.
+3. Answers 9 interview questions **out loud**, using their camera and microphone — just like a real interview call.
+4. Receives an AI-generated performance report immediately after: an overall score, a breakdown by category, specific strengths and areas to improve, and feedback on every individual answer.
+5. Can revisit any past interview and its report at any time, and download it as a PDF.
 
-It's a **personal/free project**, not a SaaS product — no payment, no team, no "trusted by X companies" claims. Marketing copy across the site (home, about, contact, footer) should stay honest to that.
+It's a **free, personal project** — not a paid product, and not a company. There's no team, no subscription, no sales pitch. The website's tone and copy are written to reflect that honestly.
 
 ---
 
-## 2. Tech Stack
+## 2. How It Works — Step by Step (User Journey)
 
-| Layer | Choice |
+This is the actual path a user takes through the product, start to finish.
+
+### Step 1 — Sign in
+The user creates an account or signs in (handled by a third-party authentication service called Clerk — the same kind of "Sign in with email/Google" flow used by most modern apps). Once signed in, they land on their personal Dashboard.
+
+### Step 2 — Upload a CV
+On the Dashboard, the user uploads their CV as a PDF or Word document. Behind the scenes, the system reads the file's text and uses AI to pull out the useful details automatically: name, skills, years of experience, education, current role, and industry. The user sees this extracted profile and can review or correct anything before moving on.
+
+### Step 3 — Set up the interview
+The user picks:
+- **Industry / role** — pre-filled from their CV, editable if needed (e.g. "Frontend Developer", "Product Manager").
+- **Experience level** — Fresher, Junior, Mid-level, Senior, Lead, or Manager (also pre-filled based on their years of experience).
+
+They then click **Start Interview**, and the browser asks for camera and microphone permission (with clear, friendly error messages if that's blocked, missing, or in use by another app).
+
+### Step 4 — The interview itself
+The system generates **9 interview questions** tailored to the user's profile and chosen role — a mix of easier and harder questions, covering behavioral and role-specific topics.
+
+The user then enters the "Interview Room" — a focused, full-screen recording view:
+- One question shown at a time, with a 60-second timer.
+- The user clicks **Record Answer** and speaks their response out loud; their voice is transcribed live on screen as they talk (so they can see what's being captured).
+- They can **Submit & Next** to move on, or **Skip** a question they don't want to answer.
+- This repeats for all 9 questions.
+
+### Step 5 — Instant feedback report
+As soon as the last question is answered, the system sends everything to the AI for scoring, and the user sees their report right away. It includes:
+- An **overall score** out of 100.
+- Sub-scores for **Technical knowledge**, **Communication**, and **Confidence**.
+- A short list of **strengths** and **areas to improve**.
+- A written **summary** and a **recommendation** (e.g. whether they seem ready, or what to work on).
+- **Per-question feedback** — how relevant, clear, and confident each specific answer was.
+
+The user can **download this report as a PDF** to keep or share.
+
+### Step 6 — History, always available
+Every completed interview and its report is automatically saved. The user can go to their **History** page at any time to see a table of every past attempt (role, date, score, and a quick "how ready are you" indicator), click into any of them to see the full report again, and download it as a PDF whenever they like. This lets them track improvement over multiple practice sessions.
+
+---
+
+## 3. Tech Stack & File Structure Overview
+
+### 3.1 Tech Stack (Plain-English Summary)
+
+| Part of the product | What powers it |
 |---|---|
-| Framework | Next.js 15 (App Router), React 19 |
-| Language | TypeScript |
-| Styling | Tailwind CSS v4 |
-| Auth | Clerk (`@clerk/nextjs`) |
-| Database | MongoDB via Prisma ORM |
-| AI | Google Gemini (`gemini-2.5-flash`) via `@google/generative-ai` |
-| File parsing | `pdf-parse` (PDF), `mammoth` (DOCX) |
-| PDF export | `jspdf` + `html2canvas-pro` (client-side screenshot → PDF) |
-| Toasts | `react-hot-toast` |
-| Speech-to-text | Browser Web Speech API (`SpeechRecognition` / `webkitSpeechRecognition`) — no server-side STT |
-| Icons | `lucide-react` + `react-feather` (both used, inconsistently, across the codebase) |
+| The website & app itself | Next.js (a modern web framework) + React, written in TypeScript |
+| Look and styling | Tailwind CSS |
+| User accounts / sign-in | Clerk (a dedicated login service — handles passwords/security so this project doesn't have to) |
+| Where user data & reports are stored | A MongoDB database, accessed through an ORM called Prisma |
+| The "AI brain" behind everything | Google's Gemini AI model — reads CVs, writes interview questions, and scores answers |
+| Reading uploaded CV files | Dedicated PDF/Word-document text extraction |
+| Turning speech into text live | The browser's own built-in speech recognition (no extra service needed) |
+| Downloadable PDF reports | Generated directly in the browser from the report the user is already looking at |
+| Pop-up notifications | A lightweight toast-notification library |
 
-**Package manager / scripts:** standard `npm run dev|build|start|lint`.
+### 3.2 File Structure Overview (High Level)
+
+The codebase follows Next.js's standard "App Router" layout. The important parts, at a glance:
+
+```
+src/
+├─ app/
+│  ├─ (site)/                → all public + logged-in pages
+│  │  ├─ page.tsx             → Home page
+│  │  ├─ about/, contact/     → marketing pages
+│  │  └─ dashboard/           → the actual product, once signed in
+│  │     ├─ page.tsx          → main Dashboard (CV + interview setup)
+│  │     ├─ history/          → past interviews list + individual reports
+│  │     ├─ InterviewSetup.tsx    → role/level picker, orchestrates a session
+│  │     ├─ InterviewSession.tsx  → the "Interview Room" recording screen
+│  │     └─ InterviewReport.tsx   → the shared report layout (used everywhere a report is shown)
+│  ├─ api/                    → backend logic the pages talk to
+│  │  ├─ cv/                  → CV upload, parsing, saving
+│  │  └─ interview/           → question generation, scoring, saving results
+│  ├─ sign-in/, sign-up/      → login pages (Clerk-powered)
+│  └─ layout.tsx              → the outermost page wrapper (fonts, auth, notifications)
+├─ lib/
+│  ├─ gemini.ts                → the shared connection to the AI model
+│  └─ cv/                     → all the "thinking" logic:
+│     ├─ parse-pdf.ts          → reads text out of an uploaded file
+│     ├─ extract-with-gemini.ts → turns that text into a structured profile
+│     ├─ generate-questions.ts  → turns a profile into 9 interview questions
+│     └─ evaluate-interview.ts  → turns answers into a scored report
+└─ components/                → reusable pieces (buttons, header, footer, page sections, etc.)
+
+prisma/
+└─ schema.prisma              → the definition of what gets stored in the database
+```
+
+**Rule of thumb:** almost anything about *how the product actually behaves* (the interview flow, scoring, the report) lives in `src/app/(site)/dashboard/` and `src/lib/cv/`. Almost everything else (`components/`, the rest of `(site)/`) is either shared visual building blocks or leftover marketing-template pages not central to the product.
 
 ---
 
-## 3. Environment Variables
+## 4. What Gets Saved, and Where
 
-Defined in `.env` (not committed as real values — see `.env.example` for the *template*'s own irrelevant vars, which are NOT what this project actually uses).
+For every user, the system keeps:
+- Their **profile** (name, email, and the structured info pulled from their CV).
+- Every **interview** they've taken (the role/level chosen, the 9 questions, their answers, how long it took).
+- The **report** generated for that interview (all scores, strengths, improvements, summary, recommendation, and per-question feedback).
 
-Actual vars this project needs:
-
-```
-DATABASE_URL=                                   # MongoDB connection string (Prisma)
-NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=              # Clerk public key (pk_test_... or pk_live_...)
-CLERK_SECRET_KEY=                               # Clerk secret key
-NEXT_PUBLIC_CLERK_SIGN_IN_URL=
-NEXT_PUBLIC_CLERK_SIGN_UP_URL=
-NEXT_PUBLIC_CLERK_SIGN_IN_FORCE_REDIRECT_URL=
-NEXT_PUBLIC_CLERK_SIGN_UP_FORCE_REDIRECT_URL=
-GEMINI_API_KEY=                                 # Google Generative AI key
-```
-
-⚠️ **`pk_test_...` vs `pk_live_...`**: while on a `pk_test_...` key, Clerk shows a "Development mode" badge and forces its "Secured by Clerk" branding footer (only removable on a paid Clerk plan, or hidden locally via `globals.css` overrides — see §9).
+This is what makes the History page and PDF downloads possible — nothing about a past interview is regenerated later; it's the same report the user saw right after finishing.
 
 ---
 
-## 4. Database Schema (MongoDB via Prisma)
+## 5. Page Overview
 
-File: `prisma/schema.prisma`. Client generated to `src/generated/prisma` (custom output path — import as `@/generated/prisma/client`, not the default `@prisma/client`).
-
-```
-User
- ├─ clerkId (unique)       — links to Clerk's user id
- ├─ email (unique)
- ├─ name, image
- ├─ cvMarkdown              — raw extracted CV text
- ├─ cvData (Json)           — structured CVData (see §6.1)
- ├─ cvUploadedAt
- └─ interviews[] ───────────┐
-                             │
-Interview                   │
- ├─ userId ──────────────────┘ (belongs to User)
- ├─ industry, level
- ├─ questions (Json)        — string[] of the 9 questions
- ├─ answers (Json)          — [{question, transcript, skipped}]
- ├─ duration (seconds)
- ├─ transcript              — flattened Q/A text blob
- ├─ completed (bool)
- └─ report? ─────────────────┐ (1:1, optional)
-                              │
-Report                       │
- ├─ interviewId (unique) ────┘
- ├─ overallScore, technicalScore, communicationScore, confidenceScore
- ├─ strengths[], improvements[]
- ├─ summary, recommendation
- ├─ cameraFeedback (Json)   — ConfidenceActivity[] (see §6.3)
- └─ voiceFeedback (Json)    — AnswerEvaluation[] (per-question breakdown)
-```
-
-**Important:** `Report` does **not** store `faceScore`/`voiceScore` as columns — those are *derived at read time* from `cameraFeedback` (see §6.3). If you ever need them persisted for performance, add columns and backfill; right now they're always recomputed.
-
----
-
-## 5. Routing Map
-
-### Public marketing pages (`src/app/(site)/...`)
-Most of this is leftover from the **Exsit Next.js template** this project was built on top of — many routes (`/pricing`, `/team`, `/shop-1`, `/checkout`, etc.) are template boilerplate never wired to real functionality. Pages that have been **intentionally rewritten** for Mocki AI:
-
-| Route | Status |
+| Page | What it's for |
 |---|---|
-| `/` (home) | Rewritten — hero, "why practice with Mocki AI", how it works, FAQ, CTA |
-| `/about` | Rewritten — honest solo-project story, no fake team/stats |
-| `/contact` | Lightly rewritten — real copy, reuses `Brands` component, no fake FAQ |
-| `/dashboard/*` | Fully custom, this is the actual product |
-| `/sign-in`, `/sign-up`, `/registers` | Clerk-hosted auth |
+| **Home** | Public landing page explaining what Mocki AI is and inviting people to try it |
+| **About** | The story behind the project — why it exists, and how it's built |
+| **Contact** | A simple way to reach out with feedback or bug reports |
+| **Dashboard** | The main hub after signing in — upload CV, set up and start an interview, see recent activity |
+| **History** | A list of every past interview with its score, and a link into the full report |
+| **Sign in / Sign up** | Account creation and login, handled by Clerk |
 
-Everything else under `(site)` (pricing, team, shop-*, checkout, blog-*, changelog, terms, privacy) is template scaffolding — check before assuming it's "done" or linked from real navigation.
+Some other pages exist in the codebase left over from the design template this project started from (things like a pricing page, a shop page, a team page) — these aren't part of the real product and aren't linked from anywhere a user would actually go.
 
-### Dashboard (the actual product) — `src/app/(site)/dashboard/`
+---
 
-| Route | Purpose |
+## 6. How "Confidence" / Face & Voice Evaluation Actually Works
+
+This section is written so you can explain it clearly if asked directly (e.g. in a viva or a walkthrough) — what the system really does, in plain terms, without overclaiming.
+
+**Q: Does the app analyze the user's face or voice in real time?**
+No. The webcam and microphone are used to **record** the user while they answer — so the interview feels real, and so their spoken answer can be captured — but the app does not run facial-expression detection on the video, and it does not analyze tone/pitch from the audio. The only thing that's actually sent for AI evaluation is the **transcribed text** of what the user said (converted from speech to text live, in the browser, as they speak).
+
+**Q: So where does the "Confidence Score" come from?**
+The AI (Gemini) reads the transcript of all 9 answers and produces one overall Confidence score (0–100) as part of its evaluation, alongside the Technical and Communication scores — based on things like how the answer was phrased, its completeness, and its structure. It's a **language-based** judgment, not a biometric one.
+
+**Q: Then what are "Face Score" and "Voice Score" in the report?**
+Those two numbers are a **presentational breakdown** of the single Confidence score, split into two conceptual halves so the report reads more like a real interview-coaching report (e.g. "Neutral Face +20", "Good Voice Energy +20", "Too Many Pauses -10"). This split is calculated using simple, transparent rules — not measured from the camera or microphone:
+- How many words the user gave per answer (very short answers count against "voice" signals).
+- How many questions were skipped or answered (skipping counts against "face" signals like composure).
+- The overall Confidence score itself, which anchors roughly half the value to each side.
+
+The two numbers are built to add back up to the same overall Confidence score, just presented as two contributing "channels" instead of one number.
+
+**Q: Is this a limitation, or intentional?**
+Intentional. Real facial-expression recognition or vocal-tone analysis would require additional AI models, more processing time, and real infrastructure cost — not justified for a free personal project at this stage. If the product ever adds genuine camera/audio analysis in the future, this is the one piece of logic that would be replaced; everything else in the report (scores, strengths, improvements, per-question feedback) would stay the same.
+
+**One-sentence summary if asked to explain it quickly:** *"The camera and mic are used to record the answer and capture what was said — the AI then scores the transcript for confidence, and the report presents that single score as a Face + Voice breakdown using simple rules, rather than actual video or audio analysis."*
+
+---
+
+## 7. Where To Go For Future Changes
+
+| If you want to... | The relevant part of the system is... |
 |---|---|
-| `/dashboard` | Main hub: CV upload/summary, interview setup, recent activity, past reports |
-| `/dashboard/history` | Table of all past interviews (industry, date, status, score, readiness badge, report link) |
-| `/dashboard/history/[id]` | Full report for one saved interview |
-| `/dashboard/interview-preview` | **Dev-only** — preview the Interview Room UI without a real session (404s outside `NODE_ENV=development`) |
-| `/dashboard/history-preview` | **Dev-only** — preview the History table with dummy rows |
-| `/dashboard/history-preview/report/[id]` | **Dev-only** — preview a report page with mock data |
-
-All dashboard routes are protected by `src/middleware.ts` (Clerk `auth.protect()` on `/dashboard(.*)`, `/interview(.*)`, `/history(.*)`, `/report(.*)`).
-
-### API routes — `src/app/api/`
-
-| Route | Method | Purpose |
-|---|---|---|
-| `/api/cv/upload` | POST | Upload PDF/DOCX → parse text → extract structured data via Gemini → save to `User` |
-| `/api/cv/extract` | POST | Re-run Gemini extraction on already-parsed text (used internally) |
-| `/api/cv/save-data` | POST / DELETE | Save edited CV data / remove CV entirely |
-| `/api/interview/generate-questions` | POST | Gemini generates 9 questions from CV + industry + level |
-| `/api/interview/evaluate` | POST | Gemini scores the completed interview (see §6.4 for exact shape) |
-| `/api/interview/save` | POST | Persists `Interview` + `Report` to MongoDB (fire-and-forget from the client — see §8 known gap) |
-
-Every route does `currentUser()` from `@clerk/nextjs/server` and 401s if not signed in.
+| Change how interview questions are generated | The question-generation logic (AI prompt + rules) |
+| Change how answers are scored | The interview evaluation logic (AI prompt + scoring rules) |
+| Change what the final report looks like | The shared report-display component — one change here updates it everywhere it's shown |
+| Change the recording/interview screen | The "Interview Room" component |
+| Add or change what's stored per interview | The database schema |
+| Change the website's marketing pages | The Home, About, and Contact pages specifically (these are the ones written for this project — others are template leftovers) |
 
 ---
 
-## 6. Core Domain Logic (`src/lib/cv/` and `src/lib/gemini.ts`)
-
-All Gemini calls go through one shared model instance:
-
-```ts
-// src/lib/gemini.ts
-export const geminiFlash = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
-```
-
-Every Gemini-calling function follows the same pattern: build a prompt asking for **raw JSON only**, strip markdown code fences from the response, `JSON.parse`, and fall back to safe defaults if a field is missing.
-
-### 6.1 `extract-with-gemini.ts` — CV → structured data
-
-```ts
-type CVData = {
-  name: string;
-  email?, phone?, linkedinUrl?: string | null;
-  skills: string[];
-  experienceYears: number;
-  currentRole?: string | null;
-  education: string;
-  summary: string;
-  industry?: string | null;
-  jobTitles?: string[] | null;
-};
-```
-`extractCVData(rawText)` — one Gemini call, parses the CV text into this shape.
-
-### 6.2 `generate-questions.ts` — CV + role → 9 questions
-
-`generateInterviewQuestions(cvData, industry, level)` → `string[]` (always exactly 9, easy→hard, mixed behavioral/technical).
-
-### 6.3 `evaluate-interview.ts` — the most important file
-
-`evaluateInterview(answers, industry, level)` → `InterviewEvaluation`:
-
-```ts
-interface InterviewEvaluation {
-  overallScore, technicalScore, communicationScore, confidenceScore: number;
-  faceScore, voiceScore: number;        // derived, see below
-  strengths: string[];
-  improvements: string[];
-  summary: string;
-  recommendation: string;
-  answerEvaluations: AnswerEvaluation[];        // per-question: relevance/clarity/confidence/feedback
-  confidenceActivities: ConfidenceActivity[];   // display-only breakdown, e.g. "Smile +20"
-}
-```
-
-**How `faceScore`/`voiceScore` actually work (important, non-obvious):**
-- Gemini only returns one `confidenceScore` (0–100) — there is **no real webcam emotion detection or voice-tone analysis** in this project.
-- `buildConfidenceActivities()` is a local heuristic (not AI) that fabricates a plausible-looking list of "activities" (e.g. "Neutral Face +20", "Too Many Pauses -10") based on simple rules: word count, skip ratio, and the confidence score's magnitude.
-- Each activity is tagged `channel: "face" | "voice"`.
-- `computeChannelScore()` splits `confidenceScore` roughly in half between the two channels, nudged up/down by that channel's activity points.
-- **This is cosmetic, not measured.** If a future version does real camera/audio analysis, this whole derivation should be replaced with actual signal-based scores — don't assume `faceScore`/`voiceScore` are scientifically meaningful today.
-
-### 6.4 `parse-pdf.ts` — file text extraction
-
-- PDF → `pdf-parse` (loaded via `eval("require")` — a workaround, not a typo; check this if PDF parsing breaks after a dependency upgrade).
-- DOCX → `mammoth`.
-
----
-
-## 7. The Interview Flow, End-to-End
-
-This is the flow that matters most — trace it here before touching any part of it.
-
-```
-1. User visits /dashboard
-   → CVSection.tsx: upload CV or shows existing CV summary
-   → POST /api/cv/upload → parseCVFile → extractCVData → saved to User.cvData
-
-2. InterviewSetup.tsx (shown once CV exists)
-   → user picks Industry + Experience Level (pre-filled from CV)
-   → "Start Interview" → browser requests camera+mic via getUserMedia
-     (permission errors are now handled with specific messages: blocked,
-      insecure-origin, no-device, in-use-by-another-app — see the
-      requestPermissionAndGenerate function)
-   → POST /api/interview/generate-questions → 9 questions
-
-3. InterviewSession.tsx (full-screen dark UI, "Interview Room")
-   → one question at a time, 60s timer per question
-   → user clicks "Record Answer" → MediaRecorder captures audio,
-     Web Speech API live-transcribes in parallel
-   → "Submit & Next" or "Skip" → advances; last question → onComplete(answers)
-
-4. Back in InterviewSetup.tsx: handleSessionComplete()
-   → POST /api/interview/evaluate → Gemini scores everything → InterviewEvaluation
-   → setStage("report") — user sees the report IMMEDIATELY
-   → in parallel (fire-and-forget): POST /api/interview/save
-     → persists Interview + Report to MongoDB
-     → success/failure toast now shown to the user (react-hot-toast)
-
-5. InterviewReport.tsx renders the report (used in 3 places — see §7.1)
-   → "Download as PDF" button: html2canvas-pro screenshots the report
-     DOM node → jsPDF assembles pages → browser download
-```
-
-### 7.1 `InterviewReport.tsx` is shared across three call sites
-
-1. `InterviewSetup.tsx` — right after a live interview finishes (real data, `candidateName={cvData.name}`).
-2. `dashboard/history/[id]/page.tsx` — viewing a saved report from History (real data, `candidateName` from Clerk `user.firstName`).
-3. `dashboard/history-preview/report/[id]/page.tsx` — dev-only preview using `mockInterviewEvaluation` from `lib/cv/mock-evaluation.ts`.
-
-If you change the report's layout/branding, you generally only need to touch this one file — all three call sites will pick it up.
-
-### 7.2 Known gap: fire-and-forget save
-
-`InterviewSetup.tsx`'s `handleSessionComplete()` fires `/api/interview/save` without `await`-ing it into the main flow. If it fails, the user still sees their report on-screen (fine), and now gets an error toast (fixed), but **the interview will silently not appear in History**. There's no retry mechanism. If this becomes a real problem, consider making save a blocking step before showing the report, or adding a retry/queue.
-
----
-
-## 8. Dashboard UI Structure
-
-```
-dashboard/
-├─ layout.tsx          — client component, owns sidebar collapsed state, renders DashboardSidebar
-├─ DashboardSidebar.tsx — white sidebar: logo, collapse toggle, nav (Dashboard/Reports), user menu
-├─ page.tsx             — server component: fetches user + stats + recent interviews (Prisma), renders DashboardClient
-├─ DashboardClient.tsx   — client wrapper: CVSection + (InterviewSetup or RecentActivity)
-├─ CVSection.tsx         — upload dropzone OR CV summary card (two render branches)
-├─ CVDataPreview.tsx     — editable CV data review/confirm screen after upload
-├─ InterviewSetup.tsx    — industry/level picker → permission flow → orchestrates the whole interview
-├─ InterviewSession.tsx  — the actual "Interview Room" full-screen recording UI
-├─ InterviewReport.tsx   — shared report renderer (see §7.1)
-├─ LoginToast.tsx        — reads ?login=success|welcome from URL, shows toast once, cleans URL
-└─ history/, history-preview/  — see §5 routing table
-```
-
-**Sidebar navigation speed tip (learned the hard way):** Clerk's `<UserButton.Link>` renders a plain `<a>` and triggers a **full page reload**, unlike Next.js's `<Link>`. Both `Header.tsx` and `DashboardSidebar.tsx` now use `<UserButton.Action onClick={() => router.push(...)}>` instead, for fast client-side navigation. If you add more Clerk menu items anywhere, use `Action`, not `Link`, unless you specifically want a hard navigation.
-
-### 8.1 Dashboard performance notes
-
-- `dashboard/page.tsx` runs **6 parallel Prisma queries** (`Promise.all`) instead of one deeply-nested `include` — each query only `select`s the fields actually needed (e.g. avoids pulling full `Report` JSON blobs just to show a count).
-- `loading.tsx` files exist at `dashboard/`, `dashboard/history/`, `dashboard/history/[id]/` for instant skeleton UI on navigation (Next.js route-level Suspense).
-- If dashboard queries get slow again as data grows, check whether a new `include: { report: true }` crept back in somewhere that only needs a `select`.
-
----
-
-## 9. Dev-Only Features (gated by `NODE_ENV === "development"`)
-
-These exist purely to let you iterate on UI without running a full real interview each time. All return `notFound()` in production.
-
-| Feature | Where | What it does |
-|---|---|---|
-| "Load Sample Report" button | `InterviewSetup.tsx` | Instantly shows `mockInterviewEvaluation` as if an interview just finished |
-| "Preview Interview Room UI" | `/dashboard/interview-preview` | Full Interview Room UI with a **dummy camera stream** (canvas-generated black video + silent audio) — lets you test the UI even if your webcam is blocked/unavailable |
-| "Preview History Table" | `/dashboard/history-preview` | 6 dummy interview rows across all score/status ranges, no DB needed |
-| Preview report detail | `/dashboard/history-preview/report/[id]` | Renders `InterviewReport` with mock data |
-
-`mock-evaluation.ts` (`src/lib/cv/mock-evaluation.ts`) is the single source of dummy evaluation data — keep it in sync with `InterviewEvaluation`'s shape whenever that type changes (TypeScript will complain if you forget, e.g. it did when `faceScore`/`voiceScore`/`channel` were added).
-
----
-
-## 10. Styling & Branding Conventions
-
-- Tailwind v4, utility-first, no CSS modules.
-- Dashboard = **white/light theme**. Interview Room (`InterviewSession.tsx`) = **dark theme** (`#0A0D16` background family) — intentionally different, it's meant to feel like a real interview call.
-- Logo path used everywhere: `/images/logo/logo.png` (light) with a `-white` suffix variant for dark backgrounds (`getDarkLogo()` helper pattern repeated in `Header.tsx`/`Footer.tsx`).
-- Brand name constant: `"Mocki Ai"` / `"Mocki AI"` (capitalization is inconsistent across the codebase — not a bug, just pick one when you touch a file).
-- Clerk's "Secured by Clerk" branding is force-hidden via raw CSS in `globals.css` (selectors like `.cl-footer`, `[data-localization-key="footer.poweredBy"]`) — **this is explicitly a local/dev-only override**, not something to rely on in production; Clerk's free-tier branding requirement isn't actually removable without a paid plan, and this CSS hack could break on a Clerk version bump.
-
----
-
-## 11. Things That Will Bite You Later (gotchas list)
-
-1. **Prisma client import path is non-default**: `import { PrismaClient } from "@/generated/prisma/client"` — NOT `@prisma/client`. The `generator client { output = "../src/generated/prisma" }` line in `schema.prisma` is why. If Prisma imports suddenly break, check this first.
-2. **`pdf-parse` is loaded via `eval("require")`** in `parse-pdf.ts` — a deliberate workaround (likely for a bundler/ESM interop issue), not dead code to clean up.
-3. **Two sign-in routes exist**: `/sign-in` (root-level, `src/app/sign-in/`) and `/registers` (inside `(site)`, using Clerk's catch-all `[[...registers]]` pattern). Both point to Clerk and redirect to `/dashboard`. Check which one your nav links actually use before assuming there's one canonical sign-in page.
-4. **`react-feather` and `lucide-react` are both used** for icons, inconsistently, across old template files vs. newly-written dashboard code. Not a mistake to "fix" wholesale — just be aware both exist.
-5. **Confidence/Face/Voice scores are heuristic, not measured** (see §6.3) — don't build features that treat them as ground truth (e.g. don't claim "we detected you smiled 3 times" in copy).
-6. **Fire-and-forget interview save** (§7.2) — a completed interview can show its report on-screen but fail to appear in History if the save API call fails silently in the background.
-7. **Most of `(site)/*` is unused template scaffolding** — before "fixing" a page like `/pricing` or `/team`, check whether it's actually linked from anywhere real, or just inherited cruft from the Exsit template this was built on.
-8. **Only run one dev server at a time.** Running `npm run dev` on multiple ports simultaneously (which happened during development) plus a stale `.next` cache can produce a genuinely broken-looking UI that has nothing to do with the source code. If the UI looks broken and the code looks fine, kill all `next dev` processes, delete `.next/`, and restart clean before debugging further.
-9. **Dashboard routes 404 for anonymous `curl` requests** — this is expected Clerk middleware behavior (redirect-to-sign-in manifests as a 404 to unauthenticated tools), not a routing bug.
-
----
-
-## 12. Where To Look When You Need To...
-
-| Task | Start here |
-|---|---|
-| Change interview question generation | `src/lib/cv/generate-questions.ts` |
-| Change how interviews are scored | `src/lib/cv/evaluate-interview.ts` |
-| Change the report's layout/content | `src/app/(site)/dashboard/InterviewReport.tsx` (affects all 3 call sites) |
-| Change the Interview Room recording UI | `src/app/(site)/dashboard/InterviewSession.tsx` |
-| Change what's stored per interview | `prisma/schema.prisma` (remember to `npx prisma generate` / migrate after schema changes) |
-| Add a new dashboard nav item | `src/app/(site)/dashboard/DashboardSidebar.tsx` — `NAV_ITEMS` array |
-| Add a new dev-only preview route | Follow the pattern in `dashboard/interview-preview/` or `dashboard/history-preview/` — `notFound()` unless `NODE_ENV === "development"` |
-| Change CV parsing/extraction | `src/lib/cv/parse-pdf.ts` (raw text) → `src/lib/cv/extract-with-gemini.ts` (structured data) |
-| Change marketing site copy | `src/app/(site)/page.tsx` (home), `about/page.tsx`, `contact/page.tsx` — these are the ones actually rewritten for this project |
-| Fix a slow navigation involving Clerk's UserButton | Make sure it uses `UserButton.Action` + `router.push`, not `UserButton.Link` |
-
----
-
-*Last significant rewrite context: dashboard sidebar redesign, Interview Room dark-theme UI, History table + dev preview routes, Prisma query optimization, Face/Voice confidence-score breakdown, and marketing-page cleanup (home/about/contact) — all done incrementally across one long working session. Check `git log` for the actual commit-by-commit history.*
+*This document describes the product as it stands after its most recent round of development: dashboard redesign, a full interview-room experience, history tracking with PDF export, and a cleaned-up public-facing website.*

@@ -3,8 +3,9 @@ import Link from "next/link";
 import PageTitle from "@/components/ui/PageTitle";
 
 export const metadata = {
-  title: "Terms & Conditions - Mocki Ai",
-  description: "Read the terms and conditions for using Mocki Ai template.",
+  title: "Terms & Conditions - Mocki AI",
+  description:
+    "The terms for using Mocki AI, a free voice-based mock interview practice tool.",
 };
 
 export default function TermsPage() {
@@ -13,147 +14,133 @@ export default function TermsPage() {
       {/* Page Title */}
       <PageTitle
         title="Terms & Conditions"
-        subtitle="Genuine feedback from those who know us best."
+        subtitle="The simple rules for using Mocki AI."
       />
       <section className="term-wrap font-dm lg:pb-24 pb-12">
         <div className="max-w-screen-xl mx-auto px-3 sm:px-6 md:px-14 lg:px-14 xl:px-18 2xl:px-3 lg:pt-24 pt-20">
           <div className="lg:w-7/12 mx-auto">
-            {/* 1. Introduction */}
+            {/* 1. What Mocki AI Is */}
             <h2 className="text-2xl md:text-3xl text-gray-900 font-semibold">
-              1. Introduction
+              1. What Mocki AI Is
             </h2>
-            <ul className="list-disc py-6 pl-5 mb-3 text-gray-800 font-medium text-[17px] leading-7">
-              <li>
-                <strong>Personal Information:</strong> Name, email address,
-                phone number, etc. (only if provided via forms)
-              </li>
-              <li>
-                <strong>Usage Data:</strong> IP address, browser type, device
-                information, and pages visited
-              </li>
-              <li>
-                <strong>Cookies:</strong> We may use cookies to enhance your
-                experience on our site
-              </li>
-            </ul>
-            <p className="text-gray-800 font-medium text-[17px] leading-7">
-              Fintech startups are rising to meet these expectations by offering
-              tools that go beyond traditional banking. Going through this
-              checklist will ensure that your content covers multiple angles,
-              making it richer and more inclusive. This approach prevents your
-              content from feeling one-dimensional or narrowly focused—allowing
-              it to resonate with a broader and more diverse audience.
+            <p className="text-gray-800 font-medium text-[17px] leading-7 py-6">
+              Mocki AI is a free, personal project that lets you practice job
+              interviews by speaking your answers out loud and getting
+              AI-generated feedback. It is not a company, and there is no
+              paid plan — by using this site, you agree to the terms below.
             </p>
 
-            {/* 2. How We Use Your Information */}
+            {/* 2. Your Account */}
             <h2 className="text-2xl md:text-3xl text-gray-900 font-semibold mt-10">
-              2. How We Use Your Information
+              2. Your Account
             </h2>
             <ul className="list-disc py-6 pl-5 mb-3 text-gray-800 font-medium text-[17px] leading-7">
-              <li>To respond to inquiries or customer service requests</li>
-              <li>To improve our website functionality and user experience</li>
               <li>
-                To send occasional updates, if you opt-in to our mailing list
+                Signing in is handled by Clerk, a third-party authentication
+                provider — Mocki AI never sees or stores your password.
+              </li>
+              <li>
+                You&apos;re responsible for keeping your account access
+                secure, and for the accuracy of the CV and information you
+                upload.
+              </li>
+              <li>
+                You can stop using the service and ask for your account and
+                data to be deleted at any time (see{" "}
+                <Link href="/contact" className="text-blue-600 underline">
+                  Contact
+                </Link>
+                ).
               </li>
             </ul>
 
-            {/* 3. Sharing Your Information */}
-            <h2 className="text-2xl md:text-3xl text-gray-900 font-semibold mb-4">
-              3. Sharing Your Information
+            {/* 3. Your CV & Interview Data */}
+            <h2 className="text-2xl md:text-3xl text-gray-900 font-semibold mb-4 mt-10">
+              3. Your CV & Interview Data
             </h2>
             <p className="text-gray-800 font-medium text-[17px] leading-7">
-              We do not sell, trade, or share your personal information with
-              third parties except as necessary to provide our services or
-              comply with the law.
+              When you upload a CV, it&apos;s processed by an AI model to
+              extract your profile (skills, experience, etc.) so interview
+              questions can be tailored to you. Your completed interviews —
+              questions, transcribed answers, and the resulting report — are
+              saved to your account so you can revisit them in History.
             </p>
             <p className="text-gray-800 font-medium text-[17px] leading-7 mt-4">
-              Third parties who perform services on your behalf (e.g., hosting,
-              payment processing, analytics, email delivery, customer support).
-              Clearly state that these providers are typically bound by
-              confidentiality agreements and only use data for specified
-              purposes.
+              This data is used only to run the product for you. It is not
+              sold, and it is not shared with third parties beyond the
+              service providers needed to run the app itself (authentication,
+              hosting, and the AI model used for scoring).
             </p>
 
-            {/* 4. Third-Party Services */}
+            {/* 4. AI-Generated Content */}
             <h2 className="text-2xl md:text-3xl text-gray-900 font-semibold mb-4 mt-10">
-              4. Third-Party Services
+              4. AI-Generated Content
             </h2>
             <p className="text-gray-800 font-medium text-[17px] leading-7">
-              We may use third-party tools like Google Analytics or email
-              providers. These tools may collect data in accordance with their
-              own privacy policies.
+              Interview questions, scores, and feedback are generated by an
+              AI model based on the text of your spoken answers. They are
+              meant as practice guidance, not a guaranteed or professional
+              assessment of your interview readiness — treat your report as
+              a helpful estimate, not a certified evaluation.
             </p>
             <p className="text-gray-800 font-medium text-[17px] leading-7 mt-4">
-              If you are involved in a merger, acquisition, or asset sale,
-              explain that data may be transferred as part of that transaction.
-              Explain that you may share data that cannot reasonably identify an
-              individual for various purposes (e.g., research, marketing,
-              reporting).
+              Camera and microphone access are used only to record your
+              answer during a session; Mocki AI does not perform real facial
+              or vocal analysis — the &quot;confidence&quot; breakdown in your
+              report is derived from your answer text, not from analyzing
+              the video or audio itself.
             </p>
 
-            {/* 5. Your Rights */}
+            {/* 5. Acceptable Use */}
             <h2 className="text-2xl md:text-3xl text-gray-900 font-semibold mb-4 mt-10">
-              5. Your Rights
+              5. Acceptable Use
+            </h2>
+            <ul className="list-disc py-6 pl-5 mb-3 text-gray-800 font-medium text-[17px] leading-7">
+              <li>Use the product for its intended purpose: practicing interviews.</li>
+              <li>
+                Don&apos;t try to disrupt, overload, or reverse-engineer the
+                service, or attempt to access another user&apos;s account or
+                data.
+              </li>
+              <li>
+                Don&apos;t upload a CV or content that isn&apos;t yours, or
+                that contains anything unlawful or harmful.
+              </li>
+            </ul>
+
+            {/* 6. No Guarantees */}
+            <h2 className="text-2xl md:text-3xl text-gray-900 font-semibold mb-4 mt-10">
+              6. No Guarantees
             </h2>
             <p className="text-gray-800 font-medium text-[17px] leading-7">
-              You can request to review, update, or delete your personal data by
-              contacting us directly at{" "}
-              <Link
-                href="mailto:support@uitheme.net"
-                className="text-blue-600 underline"
-              >
-                support@uitheme.net
+              Mocki AI is provided &quot;as is,&quot; free of charge, and
+              maintained by one person in their spare time. There&apos;s no
+              uptime guarantee, no support SLA, and no warranty that the
+              service will always be available or error-free. Please don&apos;t
+              rely on it as your only interview preparation.
+            </p>
+
+            {/* 7. Changes to These Terms */}
+            <h2 className="text-2xl md:text-3xl text-gray-900 font-semibold mb-4 mt-10">
+              7. Changes to These Terms
+            </h2>
+            <p className="text-gray-800 font-medium text-[17px] leading-7">
+              These terms may be updated as the project changes. Continued
+              use of Mocki AI after an update means you accept the revised
+              terms.
+            </p>
+
+            {/* 8. Contact */}
+            <h2 className="text-2xl md:text-3xl text-gray-900 font-semibold mb-4 mt-10">
+              8. Contact
+            </h2>
+            <p className="text-gray-800 font-medium text-[17px] leading-7">
+              Questions about these terms, or want your data removed? Reach
+              out via the{" "}
+              <Link href="/contact" className="text-blue-600 underline">
+                Contact page
               </Link>
               .
-            </p>
-            <ul className="list-disc py-6 pl-5 mb-3 text-gray-800 font-medium text-[17px] leading-7">
-              <li>
-                Complying with applicable laws, regulations, and legal
-                processes.
-              </li>
-              <li>Responding to lawful requests from public authorities.</li>
-              <li>Enforcing your terms and conditions.</li>
-            </ul>
-
-            {/* 6. Data Security */}
-            <h2 className="text-2xl md:text-3xl text-gray-900 font-semibold mb-4 mt-10">
-              6. Data Security
-            </h2>
-            <p className="text-gray-800 font-medium text-[17px] leading-7">
-              We implement reasonable security measures to protect your data
-              from unauthorized access, disclosure, or misuse. Describe the
-              security measures you implement to protect data (e.g., encryption,
-              access controls, firewalls, secure servers, regular security
-              audits, employee training).
-            </p>
-
-            {/* 7. Changes to This Policy */}
-            <h2 className="text-2xl md:text-3xl text-gray-900 font-semibold mb-4 mt-10">
-              7. Changes to This Policy
-            </h2>
-            <p className="text-gray-800 font-medium text-[17px] leading-7">
-              We reserve the right to update this Privacy Policy at any time.
-              Any changes will be posted on this page with a new effective date.
-              Acknowledge that no method of transmission over the internet or
-              electronic storage is 100% secure, and while you strive to protect
-              data, you cannot guarantee absolute security.
-            </p>
-
-            {/* 8. Contact Us */}
-            <h2 className="text-2xl md:text-3xl text-gray-900 font-semibold mb-4 mt-10">
-              8. Contact Us
-            </h2>
-            <p className="text-gray-800 font-medium text-[17px] leading-7">
-              If you have any questions about this Privacy Policy, please
-              contact us at{" "}
-              <Link
-                href="mailto:support@uitheme.net"
-                className="text-blue-600 underline"
-              >
-                support@uitheme.net
-              </Link>
-              . If you do collect data from minors (only where legally
-              permissible and with parental consent), describe the process.
             </p>
           </div>
         </div>

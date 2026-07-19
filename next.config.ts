@@ -7,7 +7,7 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       {
         protocol: "https",
-        hostname: "mocki-ai.vercel.app",
+        hostname: "exsit-next.vercel.app",
       },
       { protocol: "https", hostname: "img.clerk.com" },
       { protocol: "https", hostname: "images.pexels.com" },

@@ -35,65 +35,66 @@ interface MenuBlockProps {
 const menuItems: MenuItem[] = [
   {
     title: "Home",
+    href: "/",
   },
-  {
-    title: "Pages",
-    megaMenu: [
-      {
-        title: "Blog Pages",
-        subMenu: [
-          { title: "Blog One", href: "/blog-1" },
-          { title: "Blog Two", href: "/blog-2" },
-          { title: "Blog Three", href: "/blog-3" },
-          { title: "Single Blog", href: "/single-blog-1" },
-          { title: "Single Blog v2", href: "/single-blog-2" },
-          { title: "Terms of service", href: "/terms" },
-          { title: "Privacy policy", href: "/privacy" },
-        ],
-      },
-      {
-        title: "Special Pages",
-        subMenu: [
-          { title: "About", href: "/about" },
-          { title: "About v2", href: "/about-2" },
-          { title: "Pricing", href: "/pricing" },
-          { title: "Pricing v2", href: "/pricing-2" },
-          { title: "Team", href: "/team" },
-          { title: "Contact", href: "/contact" },
-          { title: "Contact v2", href: "/contact-2" },
-          { title: "Changelog", href: "/changelog" },
-        ],
-      },
-      {
-        title: "Shop Pages",
-        subMenu: [
-          { title: "Shop One", href: "/shop-1" },
-          { title: "Shop Two", href: "/shop-2" },
-          { title: "Single Product", href: "/single-product-1" },
-          { title: "Single Product v2", href: "/single-product-2" },
-          { title: "Cart", href: "/cart" },
-          { title: "Cart v2", href: "/cart-2" },
-          { title: "Checkout", href: "/checkout" },
-          { title: "Checkout v2", href: "/checkout-2" },
-        ],
-      },
-      {
-        title: "Other Pages",
-        subMenu: [
-          { title: "Sign in", href: "/signin" },
-          { title: "Sign in v2", href: "/login" },
-          { title: "Sign up", href: "/signup" },
-          { title: "Sign up v2", href: "/register" },
-          { title: "Reset password", href: "/reset-password" },
-          { title: "Reset password v2", href: "/forgot-password" },
-          { title: "404 Page", href: "/404" },
-          { title: "Coming Soon", href: "/coming-soon" },
-        ],
-      },
-    ],
-  },
-  { title: "Service", href: "/about-2" },
+
+  //   title: "Pages",
+  //   megaMenu: [
+  //     {
+  //       title: "Blog Pages",
+  //       subMenu: [
+  //         { title: "Blog One", href: "/blog-1" },
+  //         { title: "Blog Two", href: "/blog-2" },
+  //         { title: "Blog Three", href: "/blog-3" },
+  //         { title: "Single Blog", href: "/single-blog-1" },
+  //         { title: "Single Blog v2", href: "/single-blog-2" },
+  //         { title: "Terms of service", href: "/terms" },
+  //         { title: "Privacy policy", href: "/privacy" },
+  //       ],
+  //     },
+  //     {
+  //       title: "Special Pages",
+  //       subMenu: [
+  //         { title: "About", href: "/about" },
+  //         { title: "About v2", href: "/about-2" },
+  //         { title: "Pricing", href: "/pricing" },
+  //         { title: "Pricing v2", href: "/pricing-2" },
+  //         { title: "Team", href: "/team" },
+  //         { title: "Contact", href: "/contact" },
+  //         { title: "Contact v2", href: "/contact-2" },
+  //         { title: "Changelog", href: "/changelog" },
+  //       ],
+  //     },
+  //     {
+  //       title: "Shop Pages",
+  //       subMenu: [
+  //         { title: "Shop One", href: "/shop-1" },
+  //         { title: "Shop Two", href: "/shop-2" },
+  //         { title: "Single Product", href: "/single-product-1" },
+  //         { title: "Single Product v2", href: "/single-product-2" },
+  //         { title: "Cart", href: "/cart" },
+  //         { title: "Cart v2", href: "/cart-2" },
+  //         { title: "Checkout", href: "/checkout" },
+  //         { title: "Checkout v2", href: "/checkout-2" },
+  //       ],
+  //     },
+  //     {
+  //       title: "Other Pages",
+  //       subMenu: [
+  //         { title: "Sign in", href: "/signin" },
+  //         { title: "Sign in v2", href: "/login" },
+  //         { title: "Sign up", href: "/signup" },
+  //         { title: "Sign up v2", href: "/register" },
+  //         { title: "Reset password", href: "/reset-password" },
+  //         { title: "Reset password v2", href: "/forgot-password" },
+  //         { title: "404 Page", href: "/404" },
+  //         { title: "Coming Soon", href: "/coming-soon" },
+  //       ],
+  //     },
+  //   ],
+  // },
   { title: "About", href: "/about" },
+  { title: "Privacy", href: "/privacy" },
   { title: "Contact", href: "/contact" },
 ];
 
@@ -133,7 +134,7 @@ const MenuBlock: React.FC<MenuBlockProps> = ({
                 {item.subMenu.map((sub, subIndex) => (
                   <li key={subIndex}>
                     <Link
-                      href={sub.href || "#"}
+                      href="/"
                       className="block px-4 py-2 text-gray-700 hover:translate-x-2 dark:hover:bg-gray-800 transition duration-300"
                     >
                       {sub.title}

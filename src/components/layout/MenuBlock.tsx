@@ -94,8 +94,8 @@ const menuItems: MenuItem[] = [
   //   ],
   // },
   { title: "About", href: "/about" },
-  { title: "Privacy", href: "/privacy" },
   { title: "Contact", href: "/contact" },
+  { title: "Privacy", href: "/privacy" },
 ];
 
 const MenuBlock: React.FC<MenuBlockProps> = ({

@@ -123,7 +123,7 @@ export default function CVSection({
 
   if (cvData) {
     return (
-      <div className="rounded-2xl bg-white p-6 shadow-sm ring-1 ring-gray-100 hover:ring-indigo-200 transition-all">
+      <div className="lg:h-full flex flex-col rounded-2xl bg-white p-6 shadow-sm ring-1 ring-gray-100 hover:ring-indigo-200 transition-all">
         <div className="mb-6 flex flex-col gap-3 border-b border-gray-100 pb-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
             <h2 className="text-lg font-semibold text-gray-900">Your CV</h2>

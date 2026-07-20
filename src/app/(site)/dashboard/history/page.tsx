@@ -51,6 +51,7 @@ export default async function HistoryPage() {
         </div>
 
         <HistoryTable
+          deletable
           interviews={interviews.map((i) => ({
             id: i.id,
             industry: i.industry,

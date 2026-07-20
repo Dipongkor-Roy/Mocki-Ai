@@ -25,7 +25,7 @@ export default function InterviewSetup({
   onReportStageChange,
 }: InterviewSetupProps) {
   const [selectedIndustry, setSelectedIndustry] = useState(
-    cvData.industry || ""
+    cvData.industry || "",
   );
 
   const defaultLevel =
@@ -52,16 +52,14 @@ export default function InterviewSetup({
   const [questionsError, setQuestionsError] = useState("");
   const [finalAnswers, setFinalAnswers] = useState<InterviewAnswer[]>([]);
   const [evaluation, setEvaluation] = useState<InterviewEvaluation | null>(
-    null
+    null,
   );
   const [reportError, setReportError] = useState("");
   const streamRef = useRef<MediaStream | null>(null);
   const sessionStartRef = useRef<number | null>(null);
 
   useEffect(() => {
-    onReportStageChange?.(
-      stage === "generating-report" || stage === "report"
-    );
+    onReportStageChange?.(stage === "generating-report" || stage === "report");
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [stage]);
 
@@ -120,7 +118,7 @@ export default function InterviewSetup({
       setQuestionsError(
         error instanceof Error
           ? error.message
-          : "Failed to generate interview questions. Please try again."
+          : "Failed to generate interview questions. Please try again.",
       );
       setStage("setup");
     }
@@ -137,7 +135,7 @@ export default function InterviewSetup({
     ) {
       setPermissionStatus("denied");
       setPermissionError(
-        "Your browser can't access the camera/mic here. This usually happens on an insecure connection — open the site over https:// or on localhost and try again."
+        "Your browser can't access the camera/mic here. This usually happens on an insecure connection — open the site over https:// or on localhost and try again.",
       );
       return;
     }
@@ -243,14 +241,14 @@ export default function InterviewSetup({
         .catch((err) => {
           console.error("Failed to save interview:", err);
           toast.error(
-            "Your report is ready, but saving it to History failed. You can still view it below."
+            "Your report is ready, but saving it to History failed. You can still view it below.",
           );
         });
     } catch (error) {
       setReportError(
         error instanceof Error
           ? error.message
-          : "Failed to generate your interview report. Please try again."
+          : "Failed to generate your interview report. Please try again.",
       );
       setStage("report");
     }
@@ -486,10 +484,10 @@ export default function InterviewSetup({
         >
           🎤 Start Interview
         </button>
-
+        {/* dev mode ui test  */}
         {process.env.NODE_ENV === "development" && (
           <>
-            <button
+            {/* <button
               onClick={handleLoadSampleReport}
               className="w-full px-4 py-2.5 border border-dashed border-gray-300 text-gray-500 text-sm font-medium rounded-lg hover:bg-gray-50 transition-all"
             >
@@ -506,7 +504,7 @@ export default function InterviewSetup({
               className="block w-full px-4 py-2.5 border border-dashed border-gray-300 text-gray-500 text-sm font-medium rounded-lg hover:bg-gray-50 transition-all text-center"
             >
               📋 Preview History Table (dev only)
-            </a>
+            </a> */}
           </>
         )}
       </div>

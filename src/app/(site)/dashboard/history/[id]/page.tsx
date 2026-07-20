@@ -74,8 +74,16 @@ export default async function HistoryDetailPage({
     technicalScore: interview.report.technicalScore,
     communicationScore: interview.report.communicationScore,
     confidenceScore,
-    faceScore: computeChannelScore(confidenceActivities, "face", confidenceScore),
-    voiceScore: computeChannelScore(confidenceActivities, "voice", confidenceScore),
+    faceScore: computeChannelScore(
+      confidenceActivities,
+      "face",
+      confidenceScore,
+    ),
+    voiceScore: computeChannelScore(
+      confidenceActivities,
+      "voice",
+      confidenceScore,
+    ),
     strengths: interview.report.strengths,
     improvements: interview.report.improvements,
     summary: interview.report.summary,
@@ -97,10 +105,10 @@ export default async function HistoryDetailPage({
 
   return (
     <div className="relative flex-1 overflow-hidden px-4 py-8 sm:px-6 lg:px-8">
-      <div className="mx-auto max-w-4xl space-y-4">
+      <div className="mx-auto max-w-4xl">
         <Link
           href="/dashboard/history"
-          className="text-sm font-medium text-indigo-600 hover:text-indigo-700"
+          className="mb-4 inline-block text-sm font-medium text-indigo-600 hover:text-indigo-700"
         >
           ← Back to History
         </Link>
@@ -109,7 +117,9 @@ export default async function HistoryDetailPage({
           industry={interview.industry}
           level={interview.level}
           candidateName={
-            user.firstName || user.username || user.emailAddresses[0]?.emailAddress
+            user.firstName ||
+            user.username ||
+            user.emailAddresses[0]?.emailAddress
           }
         />
       </div>

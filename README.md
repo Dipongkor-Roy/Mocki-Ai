@@ -1,30 +1,43 @@
-# Exsit – Software, SaaS & Startup Next.js Template
+# Mocki AI
 
-Exsit is a modern, clean, and fully responsive **Next.js template** designed for SaaS products, software companies, startups, and modern businesses.
+A free, voice-based AI mock interview practice tool. Upload your CV, pick a role and experience level, answer AI-generated interview questions out loud, and get an instant AI-scored feedback report, saved to your history for later.
 
-Built using **Next.js App Router and Tailwind CSS**, Exsit provides high performance, clean code structure, and easy customization for production use.
+Built with **Next.js (App Router)**, **TypeScript**, and **Tailwind CSS**.
 
 ---
 
-## ✨ Features
+## Features
 
-- Next.js App Router
-- Tailwind CSS utility-first framework
-- Fully responsive layout
-- Multiple homepage variations
-- Reusable and modular components
-- SEO-friendly structure
-- Optimized production build
-- Clean folder structure
-- Easy customization
-- Vercel & Netlify ready
+- CV upload (PDF/DOCX) with AI-powered profile extraction
+- AI-generated interview questions tailored to your CV, role, and experience level
+- Voice-based interview sessions with live speech-to-text and webcam recording
+- AI-scored feedback report (technical, communication, confidence) with per-question breakdown
+- Interview history with saved reports and PDF export
+- Clerk-based authentication
 
 ---
 
 ## Requirements
 
 - Node.js **v18 or later**
-- npm / yarn
+- npm
+
+---
+
+## Environment Variables
+
+Copy `.env.example` to `.env` and fill in:
+
+```
+DATABASE_URL=                                   # MongoDB connection string
+NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=
+CLERK_SECRET_KEY=
+NEXT_PUBLIC_CLERK_SIGN_IN_URL=
+NEXT_PUBLIC_CLERK_SIGN_UP_URL=
+NEXT_PUBLIC_CLERK_SIGN_IN_FORCE_REDIRECT_URL=
+NEXT_PUBLIC_CLERK_SIGN_UP_FORCE_REDIRECT_URL=
+GEMINI_API_KEY=                                 # Google Generative AI key
+```
 
 ---
 
@@ -32,8 +45,7 @@ Built using **Next.js App Router and Tailwind CSS**, Exsit provides high perform
 
 ```bash
 npm install
-# or
-yarn install
+npx prisma generate
 ```
 
 ---
@@ -42,75 +54,41 @@ yarn install
 
 ```bash
 npm run dev
-# or
-yarn dev
 ```
 
 ---
 
-## Create an Optimized Production Build
+## Create a Production Build
 
 ```bash
 npm run build
-```
-
----
-
-## Start the Production Server
-
-```bash
 npm start
 ```
 
 ---
 
-##  Deployment
-
-This template can be deployed on:
-
-- **Vercel (Recommended)**
-- Netlify
-- Any Node.js-compatible hosting
-
-
-## ⚙️ Environment Configuration
-This template requires environment variables to function correctly in production. 
-1. Copy `.env.example` to `.env.local`.
-2. Define `NEXT_PUBLIC_SITE_URL` with your production domain. This is used by the dynamic SEO tools in `src/app/robots.ts`.
-
-
-## 🚀 Production Deployment
-### Vercel / Netlify
-1. Connect your repository to the hosting platform.
-2. In the **Environment Variables** settings of your dashboard, add `NEXT_PUBLIC_SITE_URL`.
-3. The build command is `npm run build` and the output directory is `.next`.
-
-### Manual Deployment
-Run `npm run build` to create an optimized production bundle, followed by `npm start` to launch the server.
-
 ## Project Structure
 
+```
 src/
-├── app/          # App Router (Pages, Layouts, Error handling)
-├── components/   # Reusable UI components (Hero, Pricing, etc.)
-├── const/        # Static constants and configuration strings
-├── data/         # Local data files (Pricing, Features, Testimonials)
-├── lib/          # Utility functions and shared logic
-├── styles/       # Global CSS and Tailwind v4 entry point
-└── types/        # TypeScript interfaces and type definitions
-public/           # Static assets (Logos, Icons, Images)
+├── app/
+│   ├── (site)/       # Public pages + dashboard (the actual product)
+│   │   └── dashboard/ # CV upload, interview setup, interview room, history
+│   └── api/           # CV parsing/extraction, interview generation & scoring
+├── components/        # UI and layout components
+├── lib/
+│   ├── gemini.ts       # Shared Gemini AI client
+│   └── cv/             # CV parsing, question generation, interview scoring
+└── middleware.ts       # Clerk auth route protection
+
+prisma/
+└── schema.prisma       # User / Interview / Report data model
+```
+
+For a deeper walkthrough of how the product works end-to-end, see `PROJECT_DOCUMENTATION.md`.
 
 ---
 
-## Customization
+## Deployment
 
-- Update pages inside `src/app`
-- Edit reusable components in `src/components`
-- Global styles can be modified in `src/app/globals.css`
-- Tailwind CSS v4 is used (no separate Tailwind config file is required by default)
-
----
-
-## License
-
-This template is licensed under the **ThemeForest Regular License**.
+Deployed on Vercel. The build command is `npm run build`, output directory `.next`.

@@ -34,7 +34,7 @@ Return exactly this JSON shape (use null for missing fields, empty array for ski
   "experienceYears": 0,
   "currentRole": "most recent job title or null",
   "jobTitles": ["array", "of", "all job titles held or null"],
-  "industry": "primary industry/domain (e.g. Software Engineering, Finance, Healthcare) or null",
+  "industry": "primary industry/domain (e.g. Software Engineering, Finance, Healthcare, Networking) or null",
   "education": "highest qualification as a short string (e.g. B.Tech Computer Science)",
   "summary": "2-3 sentence professional summary highlighting key expertise and career focus"
 }

@@ -74,6 +74,7 @@ export default function InterviewSetup({
     "Design",
     "HR",
     "Operations",
+    "Networking",
     "Other",
   ];
 

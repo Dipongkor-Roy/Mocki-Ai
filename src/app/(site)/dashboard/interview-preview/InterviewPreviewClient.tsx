@@ -166,6 +166,9 @@ export default function InterviewPreviewClient() {
       questions={MOCK_QUESTIONS}
       stream={stream}
       onComplete={(answers) => setCompleted(answers)}
+      onCancelled={(violation) => {
+        console.warn("Preview interview cancelled:", violation);
+      }}
     />
   );
 }

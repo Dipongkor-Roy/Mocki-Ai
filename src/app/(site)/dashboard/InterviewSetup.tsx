@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { toast } from "react-hot-toast";
 import type { CVData } from "@/lib/cv/extract-with-gemini";
 import InterviewSession, { type InterviewAnswer } from "./InterviewSession";
+import type { ProctoringViolation } from "./useProctoring";
 import InterviewReport from "./InterviewReport";
 import type { InterviewEvaluation } from "@/lib/cv/evaluate-interview";
 import { mockInterviewEvaluation } from "@/lib/cv/mock-evaluation";
@@ -129,6 +130,12 @@ export default function InterviewSetup({
     setPermissionStatus("requesting");
     setPermissionError("");
 
+    // Request fullscreen inside the click handler (required by browsers —
+    // it silently no-ops later without a direct user gesture). Non-fatal
+    // if it's rejected/unsupported; the in-session overlay will prompt
+    // again once the interview UI is up.
+    document.documentElement.requestFullscreen?.().catch(() => {});
+
     // getUserMedia only works on secure origins (https or localhost).
     if (
       typeof navigator === "undefined" ||
@@ -187,6 +194,20 @@ export default function InterviewSetup({
     setPermissionStatus("idle");
     setPermissionError("");
     requestPermissionAndGenerate();
+  };
+
+  const VIOLATION_TOASTS: Record<ProctoringViolation, string> = {
+    "multiple-faces":
+      "Interview cancelled: multiple people detected in the camera.",
+    "no-face": "Interview cancelled: you left the camera frame.",
+    "tab-switch": "Interview cancelled: you switched tabs/windows.",
+    "screen-share": "Interview cancelled: screen sharing was detected.",
+  };
+
+  const handleSessionCancelled = (violation: ProctoringViolation) => {
+    toast.error(VIOLATION_TOASTS[violation]);
+    streamRef.current?.getTracks().forEach((track) => track.stop());
+    setStage("setup");
   };
 
   const handleSessionComplete = async (answers: InterviewAnswer[]) => {
@@ -261,6 +282,7 @@ export default function InterviewSetup({
         questions={questions}
         stream={streamRef.current}
         onComplete={handleSessionComplete}
+        onCancelled={handleSessionCancelled}
       />
     );
   }
@@ -485,29 +507,24 @@ export default function InterviewSetup({
         >
           🎤 Start Interview
         </button>
-        {/* dev mode ui test  */}
-        {process.env.NODE_ENV === "development" && (
-          <>
-            {/* <button
-              onClick={handleLoadSampleReport}
-              className="w-full px-4 py-2.5 border border-dashed border-gray-300 text-gray-500 text-sm font-medium rounded-lg hover:bg-gray-50 transition-all"
-            >
-              🧪 Load Sample Report (dev only)
-            </button>
-            <a
-              href="/dashboard/interview-preview"
-              className="block w-full px-4 py-2.5 border border-dashed border-gray-300 text-gray-500 text-sm font-medium rounded-lg hover:bg-gray-50 transition-all text-center"
-            >
-              🎬 Preview Interview Room UI (dev only)
-            </a>
-            <a
-              href="/dashboard/history-preview"
-              className="block w-full px-4 py-2.5 border border-dashed border-gray-300 text-gray-500 text-sm font-medium rounded-lg hover:bg-gray-50 transition-all text-center"
-            >
-              📋 Preview History Table (dev only)
-            </a> */}
-          </>
-        )}
+        <button
+          onClick={handleLoadSampleReport}
+          className="w-full px-4 py-2.5 border border-dashed border-gray-300 text-gray-500 text-sm font-medium rounded-lg hover:bg-gray-50 transition-all"
+        >
+          🧪 Load Sample Report
+        </button>
+        <a
+          href="/dashboard/interview-preview"
+          className="block w-full px-4 py-2.5 border border-dashed border-gray-300 text-gray-500 text-sm font-medium rounded-lg hover:bg-gray-50 transition-all text-center"
+        >
+          🎬 Preview Interview Room UI
+        </a>
+        <a
+          href="/dashboard/history-preview"
+          className="block w-full px-4 py-2.5 border border-dashed border-gray-300 text-gray-500 text-sm font-medium rounded-lg hover:bg-gray-50 transition-all text-center"
+        >
+          📋 Preview History Table
+        </a>
       </div>
 
       {/* Confirmation Modal */}

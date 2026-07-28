@@ -16,6 +16,7 @@
     "@splidejs/splide-extension-auto-scroll": "^0.5.3",
     "aos": "^2.3.4",
     "dotenv": "^17.4.2",
+    "face-api.js": "^0.22.2",
     "glightbox": "^3.3.1",
     "html2canvas-pro": "^2.2.3",
     "jspdf": "^4.2.1",

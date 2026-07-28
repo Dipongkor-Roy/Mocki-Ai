@@ -1,6 +1,11 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { useRouter } from "next/navigation";
+import {
+  useProctoring,
+  type ProctoringViolation,
+} from "./useProctoring";
 
 export interface InterviewAnswer {
   question: string;
@@ -13,9 +18,21 @@ interface InterviewSessionProps {
   questions: string[];
   stream: MediaStream;
   onComplete: (answers: InterviewAnswer[]) => void;
+  onCancelled?: (violation: ProctoringViolation) => void;
 }
 
-const QUESTION_SECONDS = 60;
+const VIOLATION_MESSAGES: Record<ProctoringViolation, string> = {
+  "multiple-faces":
+    "More than one person was detected in the camera frame.",
+  "no-face": "You moved out of the camera frame for too long.",
+  "tab-switch": "You switched away from the interview tab/window.",
+  "screen-share": "Screen sharing was detected during the interview.",
+};
+
+const READING_SECONDS = 30;
+const ANSWER_SECONDS = 60;
+
+type SessionPhase = "reading" | "answering" | "review";
 
 interface SpeechRecognitionAlternative {
   transcript: string;
@@ -55,13 +72,17 @@ export default function InterviewSession({
   questions,
   stream,
   onComplete,
+  onCancelled,
 }: InterviewSessionProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [secondsLeft, setSecondsLeft] = useState(QUESTION_SECONDS);
+  const [phase, setPhase] = useState<SessionPhase>("reading");
+  const [secondsLeft, setSecondsLeft] = useState(READING_SECONDS);
   const [isRecording, setIsRecording] = useState(false);
-  const [hasRecorded, setHasRecorded] = useState(false);
   const [liveTranscript, setLiveTranscript] = useState("");
+  const [violation, setViolation] = useState<ProctoringViolation | null>(null);
+  const [redirectCountdown, setRedirectCountdown] = useState(5);
 
+  const router = useRouter();
   const videoRef = useRef<HTMLVideoElement>(null);
   const recognitionRef = useRef<SpeechRecognitionLike | null>(null);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
@@ -81,16 +102,70 @@ export default function InterviewSession({
     }
   }, [stream]);
 
-  // Per-question countdown timer
+  const { fullscreenLost, enterFullscreen } = useProctoring({
+    videoRef,
+    enabled: violation === null,
+    onViolation: (v) => {
+      if (timerRef.current) clearInterval(timerRef.current);
+      stopRecordingInternals();
+      isRecordingRef.current = false;
+      setViolation(v);
+      onCancelled?.(v);
+    },
+  });
+
+  const fullscreenLostRef = useRef(fullscreenLost);
   useEffect(() => {
-    setSecondsLeft(QUESTION_SECONDS);
-    setHasRecorded(false);
+    fullscreenLostRef.current = fullscreenLost;
+  }, [fullscreenLost]);
+
+  // Auto-redirect back to the dashboard a few seconds after a violation
+  useEffect(() => {
+    if (!violation) return;
+
+    setRedirectCountdown(5);
+    const countdownInterval = setInterval(() => {
+      setRedirectCountdown((prev) => {
+        if (prev <= 1) {
+          clearInterval(countdownInterval);
+          router.push("/dashboard");
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+
+    return () => clearInterval(countdownInterval);
+  }, [violation, router]);
+
+  // Reset to the reading phase whenever a new question comes up
+  useEffect(() => {
+    setPhase("reading");
     advancingRef.current = false;
+  }, [currentIndex]);
+
+  // Countdown timer — 30s to read the question, then 60s to answer once
+  // recording starts. Reading timeout skips the question; answering
+  // timeout moves to review with whatever was recorded so far. The review
+  // phase itself is untimed so the candidate can re-record without pressure.
+  useEffect(() => {
+    if (phase === "review") return;
+
+    setSecondsLeft(phase === "reading" ? READING_SECONDS : ANSWER_SECONDS);
     timerRef.current = setInterval(() => {
+      // Freeze the countdown while the candidate is outside fullscreen —
+      // they can't see the question/timer anyway, so it shouldn't burn
+      // their time.
+      if (fullscreenLostRef.current) return;
+
       setSecondsLeft((prev) => {
         if (prev <= 1) {
           if (timerRef.current) clearInterval(timerRef.current);
-          handleTimeUp();
+          if (phase === "reading") {
+            finalizeAnswer(true);
+          } else {
+            stopRecording();
+          }
           return 0;
         }
         return prev - 1;
@@ -101,7 +176,7 @@ export default function InterviewSession({
       if (timerRef.current) clearInterval(timerRef.current);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentIndex]);
+  }, [currentIndex, phase]);
 
   const stopRecordingInternals = () => {
     if (
@@ -136,6 +211,7 @@ export default function InterviewSession({
     }
   };
 
+  // Used for skips and timeouts: submits immediately with no review step.
   const finalizeAnswer = (skipped: boolean) => {
     isRecordingRef.current = false;
     stopRecordingInternals();
@@ -151,24 +227,41 @@ export default function InterviewSession({
     });
   };
 
-  const handleTimeUp = () => {
-    finalizeAnswer(false);
-  };
-
   const handleSkip = () => {
     if (timerRef.current) clearInterval(timerRef.current);
     finalizeAnswer(true);
   };
 
-  const handleNext = () => {
-    if (timerRef.current) clearInterval(timerRef.current);
-    finalizeAnswer(false);
+  // Confirms the reviewed answer and moves on — the actual submit action
+  // from the review screen.
+  const handleSubmitAnswer = () => {
+    const audioBlob =
+      audioChunksRef.current.length > 0
+        ? new Blob(audioChunksRef.current, { type: "audio/webm" })
+        : null;
+    goToNext({
+      question: questions[currentIndex],
+      transcript: finalTranscriptRef.current.trim(),
+      audioBlob,
+      skipped: false,
+    });
+  };
+
+  // Discards the just-recorded take (bad mic audio, garbled transcript,
+  // misheard words, etc.) and lets the candidate answer the same question
+  // again from scratch, with a fresh 60s timer.
+  const handleReRecord = () => {
+    audioChunksRef.current = [];
+    finalTranscriptRef.current = "";
+    setLiveTranscript("");
+    setPhase("reading");
   };
 
   const startRecording = () => {
     finalTranscriptRef.current = "";
     audioChunksRef.current = [];
     setLiveTranscript("");
+    setPhase("answering");
 
     // Audio recording (raw blob)
     const recorder = new MediaRecorder(stream);
@@ -219,12 +312,16 @@ export default function InterviewSession({
 
     isRecordingRef.current = true;
     setIsRecording(true);
-    setHasRecorded(true);
   };
 
+  // Stops recording and moves to the untimed review step instead of
+  // submitting immediately, so a bad take (mic glitch, misheard words)
+  // can be re-recorded before it's locked in.
   const stopRecording = () => {
     isRecordingRef.current = false;
-    finalizeAnswer(false);
+    stopRecordingInternals();
+    setIsRecording(false);
+    setPhase("review");
   };
 
   const handleRecordToggle = () => {
@@ -242,6 +339,52 @@ export default function InterviewSession({
 
   const answeredCount = answersRef.current.length;
 
+  if (!violation && fullscreenLost) {
+    return (
+      <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-[#0A0D16] px-6 text-center text-[#E2E5F0]">
+        <div className="w-full max-w-md rounded-2xl border border-[#FFB830]/25 bg-[#12162A] p-8 shadow-xl">
+          <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-[#FFB830]/15 text-2xl">
+            🖥️
+          </div>
+          <h1 className="mb-2 text-lg font-semibold">Fullscreen Required</h1>
+          <p className="mb-6 text-sm text-[#8E96BB]">
+            The interview must stay in fullscreen mode. Your timer is
+            paused — return to fullscreen to continue.
+          </p>
+          <button
+            onClick={enterFullscreen}
+            className="w-full rounded-lg bg-[#7C6FFF] px-5 py-2.5 text-sm font-semibold text-white hover:bg-[#6B5FFF]"
+          >
+            🖥️ Return to Fullscreen
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  if (violation) {
+    return (
+      <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-[#0A0D16] px-6 text-center text-[#E2E5F0]">
+        <div className="w-full max-w-md rounded-2xl border border-red-500/25 bg-[#12162A] p-8 shadow-xl">
+          <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-red-500/15 text-2xl">
+            🚫
+          </div>
+          <h1 className="mb-2 text-lg font-semibold">Interview Cancelled</h1>
+          <p className="mb-6 text-sm text-[#8E96BB]">
+            {VIOLATION_MESSAGES[violation]} This interview has been cancelled
+            for a security policy violation.
+          </p>
+          <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full border-2 border-red-400/40 font-mono text-lg font-bold text-red-400">
+            {redirectCountdown}
+          </div>
+          <p className="mt-3 text-xs text-[#6B7299]">
+            Redirecting to your dashboard in {redirectCountdown}s…
+          </p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="fixed inset-0 z-50 flex flex-col bg-[#0A0D16] text-[#E2E5F0]">
       {/* Header bar */}
@@ -258,16 +401,26 @@ export default function InterviewSession({
           </span>
         </div>
         <div className="flex flex-shrink-0 items-center gap-2 sm:gap-4">
-          <span className="hidden text-xs text-[#6B7299] sm:inline">
-            Time remaining
-          </span>
-          <span
-            className={`font-mono text-base font-bold tabular-nums sm:text-lg ${
-              isUrgent ? "text-red-400" : "text-[#FFB830]"
-            }`}
-          >
-            {timeDisplay}
-          </span>
+          {phase === "review" ? (
+            <span className="font-mono text-base font-bold text-[#FFB830] sm:text-lg">
+              📝 Reviewing
+            </span>
+          ) : (
+            <>
+              <span className="hidden text-xs text-[#6B7299] sm:inline">
+                {phase === "reading"
+                  ? "Time to start answering"
+                  : "Time remaining"}
+              </span>
+              <span
+                className={`font-mono text-base font-bold tabular-nums sm:text-lg ${
+                  isUrgent ? "text-red-400" : "text-[#FFB830]"
+                }`}
+              >
+                {timeDisplay}
+              </span>
+            </>
+          )}
         </div>
       </div>
 
@@ -283,9 +436,19 @@ export default function InterviewSession({
             {questions[currentIndex]}
           </h2>
 
-          <div className="flex h-[280px] flex-shrink-0 flex-col overflow-hidden rounded-lg border border-[#7C6FFF]/60 bg-[#181C2C] p-4 lg:h-auto lg:min-h-[160px] lg:flex-1">
-            <span className="mb-2 block text-[10px] font-bold uppercase tracking-wider text-[#7C6FFF]">
-              🎙 Live Transcript
+          <div
+            className={`flex h-[280px] flex-shrink-0 flex-col overflow-hidden rounded-lg border p-4 lg:h-auto lg:min-h-[160px] lg:flex-1 ${
+              phase === "review"
+                ? "border-[#FFB830]/60 bg-[#181C2C]"
+                : "border-[#7C6FFF]/60 bg-[#181C2C]"
+            }`}
+          >
+            <span
+              className={`mb-2 block text-[10px] font-bold uppercase tracking-wider ${
+                phase === "review" ? "text-[#FFB830]" : "text-[#7C6FFF]"
+              }`}
+            >
+              {phase === "review" ? "📝 Review Your Answer" : "🎙 Live Transcript"}
             </span>
             <div className="flex-1 overflow-y-auto text-sm leading-relaxed text-[#8E96BB]">
               {liveTranscript ? (
@@ -299,38 +462,66 @@ export default function InterviewSession({
                 <p className="italic text-[#6B7299]">
                   {isRecording
                     ? "Listening…"
-                    : "Press “Record Answer” to begin speaking."}
+                    : phase === "review"
+                      ? "No speech was captured. If your mic didn't pick up your answer, use Re-record."
+                      : phase === "reading"
+                        ? "Read the question, then press “Record Answer” to begin speaking."
+                        : "Press “Record Answer” to begin speaking."}
                 </p>
               )}
             </div>
           </div>
 
           {/* Controls */}
-          <div className="mt-5 flex flex-wrap items-center gap-2.5">
-            <button
-              onClick={handleRecordToggle}
-              className={`inline-flex flex-1 items-center justify-center gap-2 rounded-lg px-5 py-2.5 text-sm font-semibold transition-all sm:flex-none ${
-                isRecording
-                  ? "border border-[#FF6B6B]/25 bg-[#FF6B6B]/12 text-[#FF8080]"
-                  : "bg-[#7C6FFF] text-white hover:bg-[#6B5FFF]"
-              }`}
-            >
-              {isRecording ? "⏺ Recording — Stop" : "🎤 Record Answer"}
-            </button>
-            <button
-              onClick={handleSkip}
-              className="rounded-lg border border-[#252A40] bg-transparent px-4 py-2.5 text-sm font-medium text-[#8E96BB] transition-all hover:bg-white/5"
-            >
-              ⏭ Skip
-            </button>
-            <button
-              onClick={handleNext}
-              disabled={!hasRecorded}
-              className="inline-flex w-full items-center justify-center gap-2 rounded-lg bg-[#00CFA8]/15 px-5 py-2.5 text-sm font-semibold text-[#00CFA8] transition-all hover:bg-[#00CFA8]/25 disabled:cursor-not-allowed disabled:opacity-30 sm:ml-auto sm:w-auto"
-            >
-              {isLastQuestion ? "✓ Finish Interview" : "▶ Submit & Next"}
-            </button>
-          </div>
+          {phase === "review" ? (
+            <div className="mt-5 space-y-2.5">
+              {!liveTranscript && (
+                <p className="rounded-lg border border-[#FFB830]/25 bg-[#FFB830]/10 px-3 py-2 text-xs text-[#FFB830]">
+                  ⚠ No transcript was captured — your mic may not have
+                  worked. You can re-record your answer.
+                </p>
+              )}
+              <div className="flex flex-wrap items-center gap-2.5">
+                <button
+                  onClick={handleReRecord}
+                  className="inline-flex flex-1 items-center justify-center gap-2 rounded-lg border border-[#7C6FFF]/40 bg-[#7C6FFF]/10 px-5 py-2.5 text-sm font-semibold text-[#B0A8FF] transition-all hover:bg-[#7C6FFF]/20 sm:flex-none"
+                >
+                  🔁 Re-record Answer
+                </button>
+                <button
+                  onClick={handleSkip}
+                  className="rounded-lg border border-[#252A40] bg-transparent px-4 py-2.5 text-sm font-medium text-[#8E96BB] transition-all hover:bg-white/5"
+                >
+                  ⏭ Skip
+                </button>
+                <button
+                  onClick={handleSubmitAnswer}
+                  className="inline-flex w-full items-center justify-center gap-2 rounded-lg bg-[#00CFA8]/15 px-5 py-2.5 text-sm font-semibold text-[#00CFA8] transition-all hover:bg-[#00CFA8]/25 sm:ml-auto sm:w-auto"
+                >
+                  {isLastQuestion ? "✓ Finish Interview" : "▶ Submit & Next"}
+                </button>
+              </div>
+            </div>
+          ) : (
+            <div className="mt-5 flex flex-wrap items-center gap-2.5">
+              <button
+                onClick={handleRecordToggle}
+                className={`inline-flex flex-1 items-center justify-center gap-2 rounded-lg px-5 py-2.5 text-sm font-semibold transition-all sm:flex-none ${
+                  isRecording
+                    ? "border border-[#FF6B6B]/25 bg-[#FF6B6B]/12 text-[#FF8080]"
+                    : "bg-[#7C6FFF] text-white hover:bg-[#6B5FFF]"
+                }`}
+              >
+                {isRecording ? "⏺ Recording — Stop" : "🎤 Record Answer"}
+              </button>
+              <button
+                onClick={handleSkip}
+                className="rounded-lg border border-[#252A40] bg-transparent px-4 py-2.5 text-sm font-medium text-[#8E96BB] transition-all hover:bg-white/5"
+              >
+                ⏭ Skip
+              </button>
+            </div>
+          )}
         </div>
 
         {/* Right — webcam + signals */}

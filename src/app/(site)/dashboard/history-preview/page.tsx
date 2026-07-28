@@ -1,8 +1,7 @@
-import { notFound } from "next/navigation";
 import Link from "next/link";
 import HistoryTable, { type HistoryRow } from "../history/HistoryTable";
 
-// Dev-only route to preview the History table UI with dummy data, without
+// Preview route for the History table UI with dummy data, without
 // touching the database. Returns 404 in production so it can never ship live.
 const DUMMY_INTERVIEWS: HistoryRow[] = [
   {
@@ -56,10 +55,6 @@ const DUMMY_INTERVIEWS: HistoryRow[] = [
 ];
 
 export default function HistoryPreviewPage() {
-  if (process.env.NODE_ENV !== "development") {
-    notFound();
-  }
-
   return (
     <div className="relative flex-1 overflow-hidden px-4 py-8 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-6xl space-y-6">

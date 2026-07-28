@@ -5,8 +5,6 @@ import { usePathname } from "next/navigation";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 
-import { ClerkProvider } from "@clerk/nextjs";
-
 export default function RootLayout({
   children,
 }: {
@@ -18,17 +16,7 @@ export default function RootLayout({
   return (
     <div className="font-dm-sans">
       {!isDashboard && <Header />}
-      <ClerkProvider
-        appearance={{
-          elements: {
-            footer: { display: "none" },
-            userButtonPopoverFooter: { display: "none" },
-          },
-        }}
-      >
-        <main className="flex-1">{children}</main>
-      </ClerkProvider>
-
+      <main className="flex-1">{children}</main>
       {!isDashboard && <Footer />}
     </div>
   );

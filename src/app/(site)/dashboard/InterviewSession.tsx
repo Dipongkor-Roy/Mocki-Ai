@@ -95,13 +95,6 @@ export default function InterviewSession({
 
   const isLastQuestion = currentIndex === questions.length - 1;
 
-  // Attach webcam preview
-  useEffect(() => {
-    if (videoRef.current) {
-      videoRef.current.srcObject = stream;
-    }
-  }, [stream]);
-
   const { fullscreenLost, enterFullscreen } = useProctoring({
     videoRef,
     enabled: violation === null,
@@ -113,6 +106,23 @@ export default function InterviewSession({
       onCancelled?.(v);
     },
   });
+
+  // Attach webcam preview. Some browsers won't honor the `autoPlay`
+  // attribute for a srcObject assigned after mount, so play() is called
+  // explicitly — otherwise the feed stays black even though the stream
+  // (and camera LED) is live. Re-runs whenever the <video> element is
+  // remounted (phase/violation/fullscreenLost each gate a different
+  // early-return render) since a fresh element needs srcObject reattached.
+  useEffect(() => {
+    const video = videoRef.current;
+    if (video) {
+      video.srcObject = stream;
+      video.play().catch(() => {
+        // Autoplay can be rejected before a user gesture on some browsers;
+        // the video will start once the user interacts with the page.
+      });
+    }
+  }, [stream, phase, violation, fullscreenLost]);
 
   const fullscreenLostRef = useRef(fullscreenLost);
   useEffect(() => {

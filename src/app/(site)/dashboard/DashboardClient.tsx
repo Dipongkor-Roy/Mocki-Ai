@@ -32,7 +32,9 @@ export default function DashboardClient({
       {/* Main Content - CV */}
       <div
         className={
-          isReportStage && cvData ? "hidden" : "lg:col-span-2 lg:h-full space-y-6"
+          isReportStage && cvData
+            ? "hidden"
+            : "lg:col-span-2 lg:h-full space-y-6"
         }
       >
         <CVSection cvData={cvData} onCvDataChange={setCvData} />

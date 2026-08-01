@@ -501,7 +501,7 @@ export default function InterviewSetup({
         )}
 
         {/* Start Interview Button */}
-        <button
+        {/* <button
           onClick={handleStartInterview}
           className="w-full px-4 py-3 bg-gradient-to-r from-indigo-600 to-blue-600 text-white font-semibold rounded-lg hover:from-indigo-700 hover:to-blue-700 transition-all shadow-sm hover:shadow-md"
         >
@@ -524,7 +524,7 @@ export default function InterviewSetup({
           className="block w-full px-4 py-2.5 border border-dashed border-gray-300 text-gray-500 text-sm font-medium rounded-lg hover:bg-gray-50 transition-all text-center"
         >
           📋 Preview History Table
-        </a>
+        </a> */}
       </div>
 
       {/* Confirmation Modal */}

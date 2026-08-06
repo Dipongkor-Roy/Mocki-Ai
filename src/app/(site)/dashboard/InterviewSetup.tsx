@@ -433,7 +433,9 @@ export default function InterviewSetup({
             </div>
             {cvData.skills.length > 0 && (
               <div className="flex items-start justify-between">
-                <span className="text-sm text-gray-600">Top Skills:</span>
+                <span className="text-sm text-gray-600 wrap-normal">
+                  Top Skills:
+                </span>
                 <div className="flex flex-wrap gap-1 justify-end max-w-xs">
                   {cvData.skills.slice(0, 3).map((skill) => (
                     <span

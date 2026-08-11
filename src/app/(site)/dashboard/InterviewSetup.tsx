@@ -207,7 +207,10 @@ export default function InterviewSetup({
   const handleSessionCancelled = (violation: ProctoringViolation) => {
     toast.error(VIOLATION_TOASTS[violation]);
     streamRef.current?.getTracks().forEach((track) => track.stop());
-    setStage("setup");
+    // Don't change stage here: InterviewSession is still mounted and shows
+    // its own "Interview Cancelled" screen with a countdown that redirects
+    // to /dashboard itself. Switching stage now would unmount it early and
+    // strand the user on the setup form instead of the dashboard.
   };
 
   const handleSessionComplete = async (answers: InterviewAnswer[]) => {

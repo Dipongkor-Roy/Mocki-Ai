@@ -138,7 +138,11 @@ export default function InterviewSession({
       setRedirectCountdown((prev) => {
         if (prev <= 1) {
           clearInterval(countdownInterval);
+          if (document.fullscreenElement) {
+            document.exitFullscreen().catch(() => {});
+          }
           router.push("/dashboard");
+          router.refresh();
           return 0;
         }
         return prev - 1;

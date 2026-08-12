@@ -14,9 +14,9 @@ interface UseProctoringOptions {
   onViolation: (violation: ProctoringViolation) => void;
 }
 
-const FACE_CHECK_INTERVAL_MS = 6000; // low-frequency polling keeps CPU load light
-const FACE_DETECTOR_INPUT_SIZE = 160; // smallest tinyFaceDetector accepts — cheapest inference
-const MULTI_FACE_GRACE_COUNT = 2; // consecutive bad reads before flagging
+const FACE_CHECK_INTERVAL_MS = 2000; // frequent enough to catch a second face quickly
+const FACE_DETECTOR_INPUT_SIZE = 224; // larger input catches smaller/dim faces than 160
+const MULTI_FACE_GRACE_COUNT = 1; // flag on the first bad read — no consecutive requirement
 const MODEL_URL = "/models";
 
 // Runs `fn` when the browser is idle so detection never competes with

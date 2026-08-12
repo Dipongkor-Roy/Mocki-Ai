@@ -207,10 +207,11 @@ export default function InterviewSetup({
   const handleSessionCancelled = (violation: ProctoringViolation) => {
     toast.error(VIOLATION_TOASTS[violation]);
     streamRef.current?.getTracks().forEach((track) => track.stop());
-    // Don't change stage here: InterviewSession is still mounted and shows
-    // its own "Interview Cancelled" screen with a countdown that redirects
-    // to /dashboard itself. Switching stage now would unmount it early and
-    // strand the user on the setup form instead of the dashboard.
+    // InterviewSetup already lives on /dashboard, so router.push("/dashboard")
+    // from InterviewSession is a same-route no-op — it won't unmount this
+    // component. Reset stage after its countdown screen has had time to show,
+    // so the fixed-position InterviewSession overlay actually goes away.
+    setTimeout(() => setStage("setup"), 5500);
   };
 
   const handleSessionComplete = async (answers: InterviewAnswer[]) => {
@@ -512,7 +513,7 @@ export default function InterviewSetup({
         >
           🎤 Start Interview
         </button>
-        {/* <button
+        <button
           onClick={handleLoadSampleReport}
           className="w-full px-4 py-2.5 border border-dashed border-gray-300 text-gray-500 text-sm font-medium rounded-lg hover:bg-gray-50 transition-all"
         >
@@ -529,7 +530,7 @@ export default function InterviewSetup({
           className="block w-full px-4 py-2.5 border border-dashed border-gray-300 text-gray-500 text-sm font-medium rounded-lg hover:bg-gray-50 transition-all text-center"
         >
           📋 Preview History Table
-        </a> */}
+        </a>
       </div>
 
       {/* Confirmation Modal */}

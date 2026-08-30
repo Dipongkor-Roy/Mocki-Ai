@@ -2,9 +2,8 @@ import { MetadataRoute } from "next";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const baseUrl =
-    process.env.NEXT_PUBLIC_SITE_URL || "https://mocki-ai.vercel.app";
+    process.env.NEXT_PUBLIC_SITE_URL || "https://mocki-aii.vercel.app";
 
-  // Add the actual routes available in your template
   return [
     {
       url: baseUrl,
@@ -13,16 +12,16 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 1,
     },
     {
-      url: `${baseUrl}/about`,
+      url: `${baseUrl}/privacy`,
       lastModified: new Date(),
-      changeFrequency: "monthly",
-      priority: 0.8,
+      changeFrequency: "yearly",
+      priority: 0.3,
     },
     {
-      url: `${baseUrl}/contact`,
+      url: `${baseUrl}/terms`,
       lastModified: new Date(),
-      changeFrequency: "monthly",
-      priority: 0.7,
+      changeFrequency: "yearly",
+      priority: 0.3,
     },
   ];
 }

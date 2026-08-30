@@ -17,7 +17,6 @@
     "@google/generative-ai": "^0.24.1",
     "@prisma/client": "6.19",
     "@splidejs/react-splide": "^0.7.12",
-    "@splidejs/splide-extension-auto-scroll": "^0.5.3",
     "aos": "^2.3.4",
     "dotenv": "^17.4.2",
     "face-api.js": "^0.22.2",

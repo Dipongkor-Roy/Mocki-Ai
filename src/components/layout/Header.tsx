@@ -6,11 +6,9 @@ import { useRouter } from "next/navigation";
 import { useAuth, UserButton } from "@clerk/nextjs";
 import { Menu, X } from "react-feather";
 import MenuBlock from "./MenuBlock";
-import DarkToggle from "./DarkToggle";
-import SearchBox from "../ui/Search";
 import Image from "next/image";
 import Button from "../ui/Button";
-import { LayoutDashboard, Search, Smile } from "lucide-react";
+import { LayoutDashboard } from "lucide-react";
 
 interface HeaderProps {
   btnColor?: string;

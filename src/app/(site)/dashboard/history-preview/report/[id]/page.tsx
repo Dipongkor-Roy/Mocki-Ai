@@ -1,9 +1,15 @@
 import Link from "next/link";
+import { notFound } from "next/navigation";
 import InterviewReport from "../../../InterviewReport";
 import { mockInterviewEvaluation } from "@/lib/cv/mock-evaluation";
 
 // Preview route for the report detail UI (and PDF export) with dummy data.
+// Returns 404 in production so it can never ship live.
 export default function HistoryPreviewReportPage() {
+  if (process.env.NODE_ENV === "production") {
+    notFound();
+  }
+
   return (
     <div className="relative flex-1 overflow-hidden px-4 py-8 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-4xl space-y-4">

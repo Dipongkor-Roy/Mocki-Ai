@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { notFound } from "next/navigation";
 import HistoryTable, { type HistoryRow } from "../history/HistoryTable";
 
 // Preview route for the History table UI with dummy data, without
@@ -55,6 +56,10 @@ const DUMMY_INTERVIEWS: HistoryRow[] = [
 ];
 
 export default function HistoryPreviewPage() {
+  if (process.env.NODE_ENV === "production") {
+    notFound();
+  }
+
   return (
     <div className="relative flex-1 overflow-hidden px-4 py-8 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-6xl space-y-6">

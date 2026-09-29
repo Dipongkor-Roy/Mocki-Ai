@@ -100,22 +100,22 @@ function RecentActivity({ interviews }: { interviews: InterviewSummary[] }) {
         </ul>
       )}
 
-      {/* Dev-only preview links — uncomment to access while testing
-      <div className="mt-4 space-y-2 border-t border-gray-100 pt-4">
-        <a
-          href="/dashboard/interview-preview"
-          className="block w-full px-4 py-2.5 border border-dashed border-gray-300 text-gray-500 text-sm font-medium rounded-lg hover:bg-gray-50 transition-all text-center"
-        >
-          🎬 Preview Interview Room UI
-        </a>
-        <a
-          href="/dashboard/history-preview"
-          className="block w-full px-4 py-2.5 border border-dashed border-gray-300 text-gray-500 text-sm font-medium rounded-lg hover:bg-gray-50 transition-all text-center"
-        >
-          📋 Preview History Table
-        </a>
-      </div>
-      */}
+      {process.env.NODE_ENV !== "production" && (
+        <div className="mt-4 space-y-2 border-t border-gray-100 pt-4">
+          <a
+            href="/dashboard/interview-preview"
+            className="block w-full px-4 py-2.5 border border-dashed border-gray-300 text-gray-500 text-sm font-medium rounded-lg hover:bg-gray-50 transition-all text-center"
+          >
+            🎬 Preview Interview Room UI
+          </a>
+          <a
+            href="/dashboard/history-preview"
+            className="block w-full px-4 py-2.5 border border-dashed border-gray-300 text-gray-500 text-sm font-medium rounded-lg hover:bg-gray-50 transition-all text-center"
+          >
+            📋 Preview History Table
+          </a>
+        </div>
+      )}
     </section>
   );
 }

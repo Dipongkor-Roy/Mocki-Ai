@@ -100,6 +100,7 @@ function RecentActivity({ interviews }: { interviews: InterviewSummary[] }) {
         </ul>
       )}
 
+      {/* Dev-only preview links — uncomment to access while testing
       <div className="mt-4 space-y-2 border-t border-gray-100 pt-4">
         <a
           href="/dashboard/interview-preview"
@@ -114,6 +115,7 @@ function RecentActivity({ interviews }: { interviews: InterviewSummary[] }) {
           📋 Preview History Table
         </a>
       </div>
+      */}
     </section>
   );
 }

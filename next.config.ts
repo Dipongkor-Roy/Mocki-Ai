@@ -9,7 +9,7 @@ const nextConfig: NextConfig = {
   // Multiple lockfiles exist on some machines; pin the root to this project so
   // Next.js stops inferring a parent directory.
   outputFileTracingRoot: projectRoot,
-  serverExternalPackages: ["pdf-parse", "@prisma/client", ".prisma/client"],
+  serverExternalPackages: ["@prisma/client", ".prisma/client"],
   webpack: (config, { isServer }) => {
     config.resolve.fallback = {
       ...config.resolve.fallback,

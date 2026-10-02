@@ -5,13 +5,10 @@ export async function parseCVFile(
   mimeType: string,
 ): Promise<string> {
   if (mimeType === "application/pdf") {
-    const mod = eval("require")("pdf-parse");
-    const parser = new mod.PDFParse(new Uint8Array(buffer));
-    await parser.load();
-    const text = await parser.getText();
-    // console.log("TEXT TYPE:", typeof text);
-    // console.log("TEXT VALUE:", text);
-    return typeof text === "string" ? text : JSON.stringify(text);
+    const { extractText, getDocumentProxy } = await import("unpdf");
+    const pdf = await getDocumentProxy(new Uint8Array(buffer));
+    const { text } = await extractText(pdf, { mergePages: true });
+    return text;
   }
 
   if (
